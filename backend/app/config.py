@@ -16,6 +16,14 @@ class Settings(BaseSettings):
     # CORS
     CORS_ORIGINS: str = "http://localhost:5173,http://127.0.0.1:5173"
 
+    # Outbound email (optional - invite emails are skipped if SMTP_HOST is unset)
+    SMTP_HOST: str = ""
+    SMTP_PORT: int = 587
+    SMTP_USER: str = ""
+    SMTP_PASSWORD: str = ""
+    MAIL_FROM: str = ""
+    FRONTEND_URL: str = "http://localhost:5173"
+
     # LLM (optional - falls back to a rule-based responder if unset)
     LLM_PROVIDER: str = "none"  # "anthropic" | "openai" | "ollama" | "none"
     ANTHROPIC_API_KEY: str = ""

@@ -1,3 +1,4 @@
+import uuid
 from datetime import datetime
 
 from pydantic import BaseModel
@@ -21,3 +22,11 @@ class ShareStartResponse(BaseModel):
     token: str
     expires_at: datetime
     share_path: str
+
+
+class ContactLocationResponse(BaseModel):
+    contact_user_id: uuid.UUID
+    name: str
+    latitude: float
+    longitude: float
+    updated_at: datetime

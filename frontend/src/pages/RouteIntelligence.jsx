@@ -10,6 +10,7 @@ const CATEGORIES = ["safe", "unsafe", "well_lit", "isolated", "harassment", "sus
 export default function RouteIntelligence() {
   const { t } = useTranslation();
   const [center, setCenter] = useState(DEFAULT_CENTER);
+  const [userPosition, setUserPosition] = useState(null);
   const [reports, setReports] = useState([]);
   const [pendingPoint, setPendingPoint] = useState(null);
   const [category, setCategory] = useState("unsafe");
@@ -20,7 +21,10 @@ export default function RouteIntelligence() {
   useEffect(() => {
     refresh();
     getCurrentLocation()
-      .then(({ latitude, longitude }) => setCenter([latitude, longitude]))
+      .then(({ latitude, longitude }) => {
+        setCenter([latitude, longitude]);
+        setUserPosition([latitude, longitude]);
+      })
       .catch(() => {});
   }, []);
 
@@ -47,31 +51,59 @@ export default function RouteIntelligence() {
       <h1>{t("routes.title")}</h1>
       <p className="hint">Click anywhere on the map to tag that location.</p>
 
-      <MapView center={center} zoom={14} height="380px" onMapClick={handleMapClick}>
-        <HeatmapLayer points={reports} />
-      </MapView>
+      <div className="dashboard-grid">
+        <MapView
+          center={center}
+          zoom={14}
+          height="560px"
+          onMapClick={handleMapClick}
+          userPosition={userPosition}
+        >
+          <HeatmapLayer points={reports} />
+        </MapView>
 
-      {pendingPoint && (
-        <form className="report-form" onSubmit={handleSubmit}>
-          <h3>{t("routes.report")}</h3>
-          <label>{t("routes.category")}</label>
-          <select value={category} onChange={(e) => setCategory(e.target.value)}>
-            {CATEGORIES.map((c) => (
-              <option key={c} value={c}>
-                {t(`routes.${c}`)}
-              </option>
-            ))}
-          </select>
-          <label>{t("routes.description")}</label>
-          <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={3} />
-          <div className="form-row">
-            <button type="submit" className="btn-primary">{t("routes.submit")}</button>
-            <button type="button" className="btn-secondary" onClick={() => setPendingPoint(null)}>
-              Cancel
-            </button>
-          </div>
-        </form>
-      )}
+        <div className="side-list">
+          {pendingPoint ? (
+            <form className="report-form" onSubmit={handleSubmit} style={{ maxWidth: "none" }}>
+              <h3>{t("routes.report")}</h3>
+              <label>{t("routes.category")}</label>
+              <select value={category} onChange={(e) => setCategory(e.target.value)}>
+                {CATEGORIES.map((c) => (
+                  <option key={c} value={c}>
+                    {t(`routes.${c}`)}
+                  </option>
+                ))}
+              </select>
+              <label>{t("routes.description")}</label>
+              <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={3} />
+              <div className="form-row">
+                <button type="submit" className="btn-primary">{t("routes.submit")}</button>
+                <button type="button" className="btn-secondary" onClick={() => setPendingPoint(null)}>
+                  Cancel
+                </button>
+              </div>
+            </form>
+          ) : (
+            <>
+              <h2>{t("routes.report")} ({reports.length})</h2>
+              {reports.length === 0 ? (
+                <p className="empty-state">{t("helpers.empty")}</p>
+              ) : (
+                <ul className="card-list">
+                  {[...reports].reverse().map((r) => (
+                    <li key={r.id} className="card-list-item">
+                      <div>
+                        <strong>{t(`routes.${r.category}`)}</strong>
+                        {r.description && <p>{r.description}</p>}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

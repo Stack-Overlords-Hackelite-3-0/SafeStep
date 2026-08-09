@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import { listContacts } from "../api/contacts";
+import { listCheckIns } from "../api/checkins";
 import { getNearbyHelpers } from "../api/helpers";
-import { startShare, stopShare, updateLocation } from "../api/location";
+import { getContactLocations, startShare, stopShare, updateLocation } from "../api/location";
 import { resolveSOS } from "../api/sos";
 import FakeCallModal from "../components/FakeCallModal";
 import MapView, { DEFAULT_CENTER } from "../components/MapView";
@@ -20,6 +22,9 @@ export default function Dashboard() {
   const [userPosition, setUserPosition] = useState(null);
   const [sharing, setSharing] = useState(false);
   const [shareInfo, setShareInfo] = useState(null);
+  const [contacts, setContacts] = useState([]);
+  const [checkins, setCheckins] = useState([]);
+  const [contactLocations, setContactLocations] = useState([]);
 
   useEffect(() => {
     getCurrentLocation()
@@ -32,8 +37,19 @@ export default function Dashboard() {
         // Fall back to the default map center if permission is denied.
         getNearbyHelpers(center[0], center[1], 8).then(setHelpers).catch(() => {});
       });
+    listContacts().then(setContacts).catch(() => {});
+    listCheckIns().then(setCheckins).catch(() => {});
+
+    const refreshContactLocations = () => getContactLocations().then(setContactLocations).catch(() => {});
+    refreshContactLocations();
+    const interval = setInterval(refreshContactLocations, 20000);
+    return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const nextCheckIn = checkins
+    .filter((c) => c.status === "pending")
+    .sort((a, b) => new Date(a.scheduled_time) - new Date(b.scheduled_time))[0];
 
   const handleShareToggle = async () => {
     if (sharing) {
@@ -69,6 +85,28 @@ export default function Dashboard() {
         </div>
       )}
 
+      <div className="stat-strip">
+        <div className="stat-card">
+          <div className="stat-label">{t("nav.contacts")}</div>
+          <div className="stat-value">{contacts.length}</div>
+          <div className="stat-sub">{contacts.length === 0 ? t("contacts.empty") : t("nav.contacts")}</div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-label">{t("checkins.title")}</div>
+          <div className="stat-value">
+            {nextCheckIn ? new Date(nextCheckIn.scheduled_time).toLocaleString() : "—"}
+          </div>
+          <div className="stat-sub">
+            {nextCheckIn ? t("checkins.status_pending") : t("checkins.title")}
+          </div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-label">{t("dashboard.start_share")}</div>
+          <div className="stat-value">{sharing ? "🟢" : "⚪"}</div>
+          <div className="stat-sub">{sharing ? t("dashboard.stop_share") : t("dashboard.start_share")}</div>
+        </div>
+      </div>
+
       <div className="dashboard-grid">
         <div className="dashboard-map">
           <MapView
@@ -76,6 +114,7 @@ export default function Dashboard() {
             zoom={14}
             height="360px"
             markers={helpers.map((h) => ({ ...h, popup: h.name }))}
+            contactMarkers={contactLocations.map((c) => ({ ...c, id: c.contact_user_id }))}
             userPosition={userPosition}
           />
         </div>

@@ -1,13 +1,13 @@
 import uuid
 from datetime import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 
 class ContactCreate(BaseModel):
     name: str
     phone: str
-    email: str | None = None
+    email: EmailStr
     relationship_label: str | None = None
 
 
@@ -24,6 +24,18 @@ class ContactResponse(BaseModel):
     phone: str
     email: str | None
     relationship_label: str | None
+    status: str
+    linked_user_id: uuid.UUID | None
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class InvitationResponse(BaseModel):
+    id: uuid.UUID
+    inviter_name: str
+    inviter_email: str
     created_at: datetime
 
     class Config:

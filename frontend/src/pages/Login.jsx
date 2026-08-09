@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import Logo from "../components/Logo";
 
 export default function Login() {
   const { t } = useTranslation();
@@ -29,6 +30,7 @@ export default function Login() {
   return (
     <div className="auth-page">
       <form className="auth-card" onSubmit={handleSubmit}>
+        <Logo size={44} className="auth-logo" />
         <h1>SafeStep</h1>
         <p className="tagline">{t("tagline")}</p>
         <label>{t("auth.email")}</label>

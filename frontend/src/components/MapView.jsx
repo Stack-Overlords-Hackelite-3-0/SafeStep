@@ -1,7 +1,9 @@
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { useEffect, useRef } from "react";
-import { CircleMarker, MapContainer, Marker, Popup, TileLayer, useMap, useMapEvents } from "react-leaflet";
+import { useEffect, useRef, useState } from "react";
+import { CircleMarker, MapContainer, Marker, Popup, TileLayer, Tooltip, useMap, useMapEvents } from "react-leaflet";
+import Icon from "./Icon";
+import { getCurrentLocation } from "../utils/geo";
 
 // Vite doesn't resolve Leaflet's default marker asset URLs out of the box; point at the CDN instead.
 delete L.Icon.Default.prototype._getIconUrl;
@@ -47,21 +49,45 @@ export default function MapView({
   height = "400px",
   onMapClick,
   markers = [],
+  contactMarkers = [],
   userPosition,
+  showLocate = true,
   children,
 }) {
+  const mapRef = useRef(null);
+  const [livePosition, setLivePosition] = useState(userPosition || null);
+  const [locating, setLocating] = useState(false);
+
+  useEffect(() => {
+    if (userPosition) setLivePosition(userPosition);
+  }, [userPosition]);
+
+  const handleLocate = async () => {
+    setLocating(true);
+    try {
+      const { latitude, longitude } = await getCurrentLocation();
+      setLivePosition([latitude, longitude]);
+      const map = mapRef.current;
+      if (map) map.flyTo([latitude, longitude], Math.max(map.getZoom(), 15));
+    } catch {
+      // Location unavailable or denied — leave the map where it was.
+    } finally {
+      setLocating(false);
+    }
+  };
+
   return (
-    <div style={{ height, width: "100%", borderRadius: "12px", overflow: "hidden" }}>
-      <MapContainer center={center} zoom={zoom} style={{ height: "100%", width: "100%" }}>
+    <div className="map-wrapper" style={{ height, width: "100%" }}>
+      <MapContainer ref={mapRef} center={center} zoom={zoom} style={{ height: "100%", width: "100%" }}>
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         <RecenterOnChange center={center} zoom={zoom} />
         {onMapClick && <ClickHandler onMapClick={onMapClick} />}
-        {userPosition && (
+        {livePosition && (
           <CircleMarker
-            center={userPosition}
+            center={livePosition}
             radius={9}
             pathOptions={{ color: "#fff", weight: 2, fillColor: "#2563eb", fillOpacity: 1 }}
           >
@@ -73,8 +99,32 @@ export default function MapView({
             {m.popup && <Popup>{m.popup}</Popup>}
           </Marker>
         ))}
+        {contactMarkers.map((m, idx) => (
+          <CircleMarker
+            key={m.id || idx}
+            center={[m.latitude, m.longitude]}
+            radius={9}
+            pathOptions={{ color: "#fff", weight: 2, fillColor: "#b85677", fillOpacity: 1 }}
+          >
+            <Tooltip permanent direction="top" offset={[0, -10]} className="map-contact-label">
+              {m.name}
+            </Tooltip>
+          </CircleMarker>
+        ))}
         {children}
       </MapContainer>
+      {showLocate && (
+        <button
+          type="button"
+          className={locating ? "map-locate-btn locating" : "map-locate-btn"}
+          onClick={handleLocate}
+          disabled={locating}
+          aria-label="Show my location"
+          title="Show my location"
+        >
+          <Icon name="target" size={18} />
+        </button>
+      )}
     </div>
   );
 }

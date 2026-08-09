@@ -33,45 +33,59 @@ export default function CheckIns() {
     refresh();
   };
 
+  const pendingCount = checkins.filter((c) => c.status === "pending").length;
+
   return (
     <div className="page">
       <h1>{t("checkins.title")}</h1>
 
-      <form className="inline-form" onSubmit={handleAdd}>
-        <input
-          type="datetime-local"
-          value={scheduledTime}
-          onChange={(e) => setScheduledTime(e.target.value)}
-          required
-        />
-        <input
-          placeholder={t("checkins.note")}
-          value={note}
-          onChange={(e) => setNote(e.target.value)}
-        />
-        <button type="submit" className="btn-primary">{t("checkins.schedule")}</button>
-      </form>
+      <div className="split-page">
+        <div className="split-panel">
+          <h2>{t("checkins.schedule")}</h2>
+          <form className="inline-form" onSubmit={handleAdd}>
+            <input
+              type="datetime-local"
+              value={scheduledTime}
+              onChange={(e) => setScheduledTime(e.target.value)}
+              required
+            />
+            <input
+              placeholder={t("checkins.note")}
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+            />
+            <button type="submit" className="btn-primary full-width">{t("checkins.schedule")}</button>
+          </form>
+        </div>
 
-      <ul className="card-list">
-        {checkins.map((c) => (
-          <li key={c.id} className="card-list-item">
-            <div>
-              <strong>{new Date(c.scheduled_time).toLocaleString()}</strong>
-              <p>
-                {c.note} <span className={`status-pill ${c.status}`}>{t(`checkins.status_${c.status}`)}</span>
-              </p>
-            </div>
-            <div className="card-actions">
-              {c.status === "pending" && (
-                <button type="button" className="btn-secondary" onClick={() => handleConfirm(c.id)}>
-                  {t("checkins.confirm")}
-                </button>
-              )}
-              <button type="button" className="btn-danger" onClick={() => handleDelete(c.id)}>✕</button>
-            </div>
-          </li>
-        ))}
-      </ul>
+        <div className="split-content">
+          <h2>{t("checkins.title")} ({pendingCount} {t("checkins.status_pending")})</h2>
+          {checkins.length === 0 ? (
+            <p className="empty-state">{t("checkins.schedule")}</p>
+          ) : (
+            <ul className="card-list">
+              {checkins.map((c) => (
+                <li key={c.id} className="card-list-item">
+                  <div>
+                    <strong>{new Date(c.scheduled_time).toLocaleString()}</strong>
+                    <p>
+                      {c.note} <span className={`status-pill ${c.status}`}>{t(`checkins.status_${c.status}`)}</span>
+                    </p>
+                  </div>
+                  <div className="card-actions">
+                    {c.status === "pending" && (
+                      <button type="button" className="btn-secondary" onClick={() => handleConfirm(c.id)}>
+                        {t("checkins.confirm")}
+                      </button>
+                    )}
+                    <button type="button" className="btn-danger" onClick={() => handleDelete(c.id)}>✕</button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

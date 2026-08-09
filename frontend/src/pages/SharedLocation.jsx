@@ -30,6 +30,7 @@ export default function SharedLocation() {
             zoom={16}
             height="420px"
             markers={[{ latitude: location.latitude, longitude: location.longitude, popup: "Last known location" }]}
+            showLocate={false}
           />
           <p className="hint">Last updated: {new Date(location.updated_at).toLocaleString()}</p>
         </>

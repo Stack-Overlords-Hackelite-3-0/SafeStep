@@ -10,3 +10,5 @@ export const stopShare = () => apiClient.post("/api/location/share/stop");
 
 export const getSharedLocation = (token) =>
   apiClient.get(`/api/location/share/${token}`).then((r) => r.data);
+
+export const getContactLocations = () => apiClient.get("/api/location/contacts").then((r) => r.data);

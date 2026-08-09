@@ -15,11 +15,13 @@ export default function Helpers() {
   const { t } = useTranslation();
   const [helpers, setHelpers] = useState([]);
   const [center, setCenter] = useState(DEFAULT_CENTER);
+  const [userPosition, setUserPosition] = useState(null);
 
   useEffect(() => {
     getCurrentLocation()
       .then(({ latitude, longitude }) => {
         setCenter([latitude, longitude]);
+        setUserPosition([latitude, longitude]);
         return getNearbyHelpers(latitude, longitude, 10);
       })
       .then(setHelpers)
@@ -29,26 +31,37 @@ export default function Helpers() {
 
   return (
     <div className="page">
-      <h1>{t("helpers.title")}</h1>
-      <MapView center={center} zoom={13} height="320px" markers={helpers.map((h) => ({ ...h, popup: h.name }))} />
+      <h1>{t("helpers.title")} ({helpers.length})</h1>
 
-      {helpers.length === 0 ? (
-        <p className="empty-state">{t("helpers.empty")}</p>
-      ) : (
-        <ul className="card-list">
-          {helpers.map((h) => (
-            <li key={h.id} className="card-list-item">
-              <div>
-                <strong>{TYPE_ICON[h.helper_type] || "🤝"} {h.name}</strong>
-                <p>
-                  {h.phone} {h.distance_km != null && `• ${t("helpers.distance", { km: h.distance_km })}`}
-                </p>
-              </div>
-              {h.verified && <span className="badge">✓</span>}
-            </li>
-          ))}
-        </ul>
-      )}
+      <div className="dashboard-grid">
+        <MapView
+          center={center}
+          zoom={13}
+          height="560px"
+          markers={helpers.map((h) => ({ ...h, popup: h.name }))}
+          userPosition={userPosition}
+        />
+
+        <div className="side-list">
+          {helpers.length === 0 ? (
+            <p className="empty-state">{t("helpers.empty")}</p>
+          ) : (
+            <ul className="card-list">
+              {helpers.map((h) => (
+                <li key={h.id} className="card-list-item">
+                  <div>
+                    <strong>{TYPE_ICON[h.helper_type] || "🤝"} {h.name}</strong>
+                    <p>
+                      {h.phone} {h.distance_km != null && `• ${t("helpers.distance", { km: h.distance_km })}`}
+                    </p>
+                  </div>
+                  {h.verified && <span className="badge">✓</span>}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

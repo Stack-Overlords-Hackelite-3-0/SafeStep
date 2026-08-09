@@ -2,6 +2,7 @@ import logging
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import text
 
 from app import models  # noqa: F401 - ensures models are registered on Base before create_all
 from app.config import get_settings
@@ -26,6 +27,15 @@ app.add_middleware(
 @app.on_event("startup")
 def on_startup():
     Base.metadata.create_all(bind=engine)
+    # No Alembic in this project — create_all only adds new tables, not columns on
+    # existing ones, so ship additive column changes here.
+    with engine.begin() as conn:
+        conn.execute(text(
+            "ALTER TABLE trusted_contacts ADD COLUMN IF NOT EXISTS linked_user_id UUID REFERENCES users(id)"
+        ))
+        conn.execute(text(
+            "ALTER TABLE trusted_contacts ADD COLUMN IF NOT EXISTS status VARCHAR(16) NOT NULL DEFAULT 'accepted'"
+        ))
     db = SessionLocal()
     try:
         seed_helpers(db)

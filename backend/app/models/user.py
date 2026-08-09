@@ -20,7 +20,12 @@ class User(Base):
     fake_caller_name: Mapped[str] = mapped_column(String(255), default="Mom")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
 
-    trusted_contacts = relationship("TrustedContact", back_populates="user", cascade="all, delete-orphan")
+    trusted_contacts = relationship(
+        "TrustedContact",
+        back_populates="user",
+        cascade="all, delete-orphan",
+        foreign_keys="TrustedContact.user_id",
+    )
     sos_alerts = relationship("SOSAlert", back_populates="user", cascade="all, delete-orphan")
     safety_reports = relationship("SafetyReport", back_populates="user")
     chat_messages = relationship("ChatMessage", back_populates="user", cascade="all, delete-orphan")

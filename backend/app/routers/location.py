@@ -6,9 +6,10 @@ from sqlalchemy.orm import Session
 
 from app.core.deps import get_current_user
 from app.database import get_db
+from app.models.contact import TrustedContact
 from app.models.location import LocationPing, LocationShare
 from app.models.user import User
-from app.schemas.location import LocationResponse, LocationUpdateRequest, ShareStartResponse
+from app.schemas.location import ContactLocationResponse, LocationResponse, LocationUpdateRequest, ShareStartResponse
 
 router = APIRouter(prefix="/api/location", tags=["location"])
 
@@ -30,6 +31,41 @@ def update_location(
     db.commit()
     db.refresh(ping)
     return ping
+
+
+@router.get("/contacts", response_model=list[ContactLocationResponse])
+def list_contact_locations(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """Latest known location for every mutually-accepted trusted contact who has one."""
+    linked = (
+        db.query(TrustedContact)
+        .filter(
+            TrustedContact.user_id == current_user.id,
+            TrustedContact.status == "accepted",
+            TrustedContact.linked_user_id.isnot(None),
+        )
+        .all()
+    )
+    if not linked:
+        return []
+
+    linked_ids = [c.linked_user_id for c in linked]
+    pings = {p.user_id: p for p in db.query(LocationPing).filter(LocationPing.user_id.in_(linked_ids)).all()}
+
+    results = []
+    for contact in linked:
+        ping = pings.get(contact.linked_user_id)
+        if not ping:
+            continue
+        results.append(
+            ContactLocationResponse(
+                contact_user_id=contact.linked_user_id,
+                name=contact.name,
+                latitude=ping.latitude,
+                longitude=ping.longitude,
+                updated_at=ping.updated_at,
+            )
+        )
+    return results
 
 
 @router.post("/share/start", response_model=ShareStartResponse)

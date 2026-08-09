@@ -58,7 +58,17 @@
     "name": "Name",
     "phone": "Phone",
     "relationship": "Relationship",
-    "empty": "No trusted contacts yet. Add someone who should be notified in an emergency."
+    "email": "Email",
+    "email_hint": "We use this to find their SafeStep account and send an in-app invite to link up.",
+    "empty": "No trusted contacts yet. Add someone who should be notified in an emergency.",
+    "status_pending": "Invite sent",
+    "status_accepted": "Trusted",
+    "status_declined": "Declined",
+    "invitations_title": "Invitations",
+    "invitations_empty": "No pending invitations.",
+    "invite_from": "{{name}} wants to add you as a trusted contact.",
+    "accept": "Accept",
+    "decline": "Decline"
   },
   "helpers": {
     "title": "Nearby Helper Network",
