@@ -1,12 +1,17 @@
-from fastapi import APIRouter, Depends
+import logging
+
+from fastapi import APIRouter, Depends, Form, HTTPException, UploadFile, status
 from sqlalchemy.orm import Session
 
 from app.core.deps import get_current_user
 from app.database import get_db
 from app.models.chat import ChatMessage
 from app.models.user import User
-from app.schemas.chat import ChatMessageRequest, ChatMessageResponse, ChatReplyResponse
+from app.schemas.chat import ChatMessageRequest, ChatMessageResponse, ChatReplyResponse, TranscribeResponse
 from app.services.chatbot_service import get_chatbot_reply
+from app.services.speech_service import transcribe_audio
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/chatbot", tags=["chatbot"])
 
@@ -44,7 +49,9 @@ def send_message(
     )
     history = [{"role": m.role, "content": m.content} for m in reversed(recent)]
 
-    reply_text, source = get_chatbot_reply(payload.message, payload.language, history[:-1])
+    reply_text, source = get_chatbot_reply(
+        payload.message, payload.language, history[:-1], db=db, user_id=current_user.id
+    )
 
     assistant_msg = ChatMessage(
         user_id=current_user.id, role="assistant", language=payload.language, content=reply_text
@@ -54,3 +61,20 @@ def send_message(
     db.refresh(assistant_msg)
 
     return ChatReplyResponse(reply=assistant_msg, source=source)
+
+
+@router.post("/transcribe", response_model=TranscribeResponse)
+async def transcribe(
+    audio: UploadFile,
+    language: str = Form("en"),
+    current_user: User = Depends(get_current_user),
+):
+    audio_bytes = await audio.read()
+    if not audio_bytes:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Empty audio file")
+    try:
+        text = transcribe_audio(audio_bytes, audio.filename or "voice.webm", language)
+    except Exception:
+        logger.exception("Speech-to-text failed")
+        raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail="Could not transcribe audio")
+    return TranscribeResponse(text=text)

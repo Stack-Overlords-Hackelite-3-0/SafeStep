@@ -45,6 +45,11 @@
     "title": "AI Support Companion",
     "placeholder": "Ask about reporting, evidence, your rights, or helplines...",
     "send": "Send",
+    "typing": "Thinking…",
+    "transcribing": "Listening…",
+    "voice_replies": "🔊 Speak replies",
+    "send_error": "Couldn't get a reply. Please try again.",
+    "transcribe_error": "Couldn't understand the recording. Please try again or type instead.",
     "disclaimer": "This companion offers general guidance, not a substitute for professional legal or medical advice."
   },
   "contacts": {

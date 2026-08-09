@@ -17,9 +17,17 @@ class Settings(BaseSettings):
     CORS_ORIGINS: str = "http://localhost:5173,http://127.0.0.1:5173"
 
     # LLM (optional - falls back to a rule-based responder if unset)
-    LLM_PROVIDER: str = "none"  # "anthropic" | "openai" | "none"
+    LLM_PROVIDER: str = "none"  # "anthropic" | "openai" | "ollama" | "none"
     ANTHROPIC_API_KEY: str = ""
     OPENAI_API_KEY: str = ""
+    OLLAMA_BASE_URL: str = "http://localhost:11434"
+    OLLAMA_MODEL: str = "llama3:8b"
+
+    # Speech-to-text (optional - voice input in the chatbot). Runs locally via
+    # faster-whisper, no API key required.
+    WHISPER_MODEL_SIZE: str = "base"  # tiny | base | small | medium | large-v3
+    WHISPER_DEVICE: str = "cpu"
+    WHISPER_COMPUTE_TYPE: str = "int8"
 
     # App
     ENV: str = "development"

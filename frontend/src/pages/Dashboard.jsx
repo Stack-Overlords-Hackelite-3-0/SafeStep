@@ -17,6 +17,7 @@ export default function Dashboard() {
   const [activeAlert, setActiveAlert] = useState(null);
   const [helpers, setHelpers] = useState([]);
   const [center, setCenter] = useState(DEFAULT_CENTER);
+  const [userPosition, setUserPosition] = useState(null);
   const [sharing, setSharing] = useState(false);
   const [shareInfo, setShareInfo] = useState(null);
 
@@ -24,6 +25,7 @@ export default function Dashboard() {
     getCurrentLocation()
       .then(({ latitude, longitude }) => {
         setCenter([latitude, longitude]);
+        setUserPosition([latitude, longitude]);
         getNearbyHelpers(latitude, longitude, 8).then(setHelpers).catch(() => {});
       })
       .catch(() => {
@@ -69,7 +71,13 @@ export default function Dashboard() {
 
       <div className="dashboard-grid">
         <div className="dashboard-map">
-          <MapView center={center} zoom={14} height="360px" markers={helpers.map((h) => ({ ...h, popup: h.name }))} />
+          <MapView
+            center={center}
+            zoom={14}
+            height="360px"
+            markers={helpers.map((h) => ({ ...h, popup: h.name }))}
+            userPosition={userPosition}
+          />
         </div>
 
         <div className="dashboard-actions">

@@ -1,6 +1,7 @@
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { MapContainer, Marker, Popup, TileLayer, useMapEvents } from "react-leaflet";
+import { useEffect, useRef } from "react";
+import { CircleMarker, MapContainer, Marker, Popup, TileLayer, useMap, useMapEvents } from "react-leaflet";
 
 // Vite doesn't resolve Leaflet's default marker asset URLs out of the box; point at the CDN instead.
 delete L.Icon.Default.prototype._getIconUrl;
@@ -21,12 +22,32 @@ function ClickHandler({ onMapClick }) {
   return null;
 }
 
+// MapContainer only reads `center`/`zoom` on the initial render, so when the
+// caller's center arrives later (e.g. async geolocation), the map needs to be
+// told explicitly to move there.
+function RecenterOnChange({ center, zoom }) {
+  const map = useMap();
+  const lastCenter = useRef(center);
+
+  useEffect(() => {
+    const [lat, lng] = center;
+    const [lastLat, lastLng] = lastCenter.current;
+    if (lat !== lastLat || lng !== lastLng) {
+      map.setView(center, zoom);
+      lastCenter.current = center;
+    }
+  }, [center, zoom, map]);
+
+  return null;
+}
+
 export default function MapView({
   center = DEFAULT_CENTER,
   zoom = 14,
   height = "400px",
   onMapClick,
   markers = [],
+  userPosition,
   children,
 }) {
   return (
@@ -36,7 +57,17 @@ export default function MapView({
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
+        <RecenterOnChange center={center} zoom={zoom} />
         {onMapClick && <ClickHandler onMapClick={onMapClick} />}
+        {userPosition && (
+          <CircleMarker
+            center={userPosition}
+            radius={9}
+            pathOptions={{ color: "#fff", weight: 2, fillColor: "#2563eb", fillOpacity: 1 }}
+          >
+            <Popup>You are here</Popup>
+          </CircleMarker>
+        )}
         {markers.map((m, idx) => (
           <Marker key={m.id || idx} position={[m.latitude, m.longitude]}>
             {m.popup && <Popup>{m.popup}</Popup>}

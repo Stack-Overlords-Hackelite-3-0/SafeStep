@@ -23,3 +23,7 @@ class ChatMessageResponse(BaseModel):
 class ChatReplyResponse(BaseModel):
     reply: ChatMessageResponse
     source: str  # "llm" | "rule_based"
+
+
+class TranscribeResponse(BaseModel):
+    text: str
