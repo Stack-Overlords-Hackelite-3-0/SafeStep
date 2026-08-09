@@ -1,0 +1,92 @@
+{
+  "app_name": "SafeStep",
+  "tagline": "Deter. Detect. Respond. Support.",
+  "nav": {
+    "dashboard": "Dashboard",
+    "contacts": "Trusted Contacts",
+    "chatbot": "AI Companion",
+    "helpers": "Helper Network",
+    "routes": "Safety Map",
+    "checkins": "Check-ins",
+    "profile": "Profile",
+    "logout": "Logout"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Create Account",
+    "email": "Email",
+    "password": "Password",
+    "full_name": "Full Name",
+    "phone": "Phone Number",
+    "preferred_language": "Preferred Language",
+    "no_account": "Don't have an account?",
+    "have_account": "Already have an account?",
+    "login_button": "Log In",
+    "register_button": "Sign Up",
+    "login_failed": "Invalid email or password.",
+    "register_failed": "Could not create account."
+  },
+  "dashboard": {
+    "welcome": "Hi, {{name}}",
+    "sos_button": "SOS",
+    "sos_hold": "Hold to send SOS",
+    "fake_call": "Start Fake Call",
+    "start_share": "Share Live Location",
+    "stop_share": "Stop Sharing",
+    "quick_actions": "Quick Actions"
+  },
+  "sos": {
+    "confirm_title": "SOS Alert Sent",
+    "notified": "Trusted contacts notified: {{names}}",
+    "resolve": "I'm Safe Now",
+    "history": "Alert History"
+  },
+  "chatbot": {
+    "title": "AI Support Companion",
+    "placeholder": "Ask about reporting, evidence, your rights, or helplines...",
+    "send": "Send",
+    "disclaimer": "This companion offers general guidance, not a substitute for professional legal or medical advice."
+  },
+  "contacts": {
+    "title": "Trusted Contacts",
+    "add": "Add Contact",
+    "name": "Name",
+    "phone": "Phone",
+    "relationship": "Relationship",
+    "empty": "No trusted contacts yet. Add someone who should be notified in an emergency."
+  },
+  "helpers": {
+    "title": "Nearby Helper Network",
+    "empty": "No verified helpers found nearby.",
+    "distance": "{{km}} km away"
+  },
+  "routes": {
+    "title": "Smart Route Intelligence",
+    "report": "Report This Location",
+    "category": "Category",
+    "safe": "Safe",
+    "unsafe": "Unsafe",
+    "well_lit": "Well-lit",
+    "isolated": "Isolated",
+    "harassment": "Harassment",
+    "suspicious_activity": "Suspicious Activity",
+    "description": "Description (optional)",
+    "submit": "Submit Report"
+  },
+  "checkins": {
+    "title": "Scheduled Check-ins",
+    "schedule": "Schedule a Check-in",
+    "time": "Time",
+    "note": "Note",
+    "confirm": "Confirm I'm Safe",
+    "status_pending": "Pending",
+    "status_confirmed": "Confirmed",
+    "status_missed": "Missed"
+  },
+  "profile": {
+    "title": "Profile",
+    "fake_caller_name": "Fake Caller Name",
+    "save": "Save Changes",
+    "saved": "Profile updated."
+  }
+}

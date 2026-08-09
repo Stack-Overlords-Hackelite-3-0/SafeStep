@@ -1,0 +1,72 @@
+[
+  {
+    "id": "report_harassment",
+    "topic": "How to report harassment",
+    "keywords": ["report", "complain", "complaint", "police", "how do i report", "file a report"],
+    "content": {
+      "en": "You can report harassment to: (1) the Sri Lanka Police emergency line 119, (2) your nearest police station's Women & Children's Desk, which is trained to handle these cases sensitively, or (3) the transport operator/conductor if it happened on a bus or train. You do not have to confront the person yourself. If you're not ready to go to the police, Women In Need (WIN) can help you understand your options first.",
+      "si": "ඔබට හිරිහැරයක් වාර්තා කළ හැක්කේ: (1) ශ්‍රී ලංකා පොලිස් හදිසි ඇමතුම් අංක 119, (2) ළඟම ඇති පොලිස් ස්ථානයේ කාන්තා හා ළමා කාර්යාංශය, එය මෙවැනි සිද්ධි සංවේදීව හසුරුවනු ලබයි, හෝ (3) එය බස් රථයක හෝ දුම්රියක සිදු වූයේ නම් ප්‍රවාහන අධිකාරියට/කොන්දොස්තරයට. ඔබටම එම පුද්ගලයාට මුහුණ දීමට අවශ්‍ය නැත. පොලීසියට යාමට සූදානම් නැත්නම්, Women In Need (WIN) ආයතනයට ඔබේ විකල්ප තේරුම් ගැනීමට උදව් කළ හැක.",
+      "ta": "நீங்கள் தொல்லையை (1) இலங்கை காவல்துறை அவசர எண் 119, (2) அருகிலுள்ள காவல் நிலையத்தின் பெண்கள் மற்றும் குழந்தைகள் பிரிவு, இது இதுபோன்ற வழக்குகளை உணர்வுபூர்வமாக கையாள பயிற்சி பெற்றது, அல்லது (3) பேருந்து/ரயிலில் நடந்திருந்தால் போக்குவரத்து நடத்துநருக்கு புகாரளிக்கலாம். நீங்களே அந்த நபரை எதிர்கொள்ள வேண்டியதில்லை. காவல்துறையிடம் செல்ல தயாராக இல்லை என்றால், Women In Need (WIN) உங்கள் விருப்பங்களை புரிந்துகொள்ள உதவ முடியும்."
+    }
+  },
+  {
+    "id": "preserve_evidence",
+    "topic": "What evidence to preserve",
+    "keywords": ["evidence", "proof", "photo", "screenshot", "witness", "video"],
+    "content": {
+      "en": "If it's safe to do so: note the date, time, and location; take photos or screenshots of anything relevant (messages, the person, a vehicle/bus number); write down names or contact details of any witnesses; and keep any physical evidence (torn clothing, etc.) without washing it. Don't delete messages or calls from the person, even if they're upsetting - they can support your case later.",
+      "si": "එය කිරීම ආරක්ෂිත නම්: දිනය, වේලාව සහ ස්ථානය සටහන් කරන්න; අදාළ ඕනෑම දෙයක (පණිවිඩ, පුද්ගලයා, වාහන/බස් අංකය) ඡායාරූප හෝ තිර රුවක් ගන්න; සාක්ෂිකරුවන්ගේ නම් හෝ සම්බන්ධතා විස්තර ලියා තබා ගන්න; සහ භෞතික සාක්ෂි (ඉරී ගිය ඇඳුම් වැනි) නොසෝදා තබා ගන්න. එම පුද්ගලයාගෙන් ලැබුණු පණිවිඩ හෝ ඇමතුම් කම්පනයක් වුවත් මකා නොදමන්න - ඒවා පසුව ඔබේ නඩුවට උපකාරී වේ.",
+      "ta": "பாதுகாப்பாக இருந்தால்: தேதி, நேரம், இடத்தை குறித்து வையுங்கள்; தொடர்புடைய எதையும் (செய்திகள், நபர், வாகன/பேருந்து எண்) புகைப்படம் அல்லது ஸ்கிரீன்ஷாட் எடுக்கவும்; சாட்சிகளின் பெயர்/தொடர்பு விவரங்களை எழுதி வையுங்கள்; கிழிந்த ஆடை போன்ற பொருள் சான்றுகளை கழுவாமல் வையுங்கள். அந்த நபரிடமிருந்து வந்த செய்திகள்/அழைப்புகளை மனவேதனை அளித்தாலும் நீக்காதீர்கள் - அவை பின்னர் உங்கள் வழக்கிற்கு உதவும்."
+    }
+  },
+  {
+    "id": "helplines",
+    "topic": "Helplines and support services",
+    "keywords": ["helpline", "hotline", "number", "call", "help", "support service", "counsel"],
+    "content": {
+      "en": "Key numbers: Police Emergency - 119, Women In Need (WIN) 24hr hotline - 077 567 6555, National Child Protection Authority - 1929, Sri Lanka Ambulance - 1990. WIN also offers free counselling, legal aid, and shelter referrals in Sinhala, Tamil, and English.",
+      "si": "ප්‍රධාන අංක: පොලිස් හදිසි - 119, Women In Need (WIN) පැය 24 ක ක්ෂණික ඇමතුම් අංකය - 077 567 6555, ජාතික ළමා ආරක්ෂණ අධිකාරිය - 1929, ශ්‍රී ලංකා ගිලන් රථ සේවය - 1990. WIN ආයතනය සිංහල, දෙමළ සහ ඉංග්‍රීසි භාෂාවලින් නොමිලේ උපදේශන, නීති සහාය සහ නවාතැන් යොමු කිරීම් ද සපයයි.",
+      "ta": "முக்கிய எண்கள்: காவல்துறை அவசரம் - 119, Women In Need (WIN) 24 மணி நேர ஹாட்லைன் - 077 567 6555, தேசிய குழந்தை பாதுகாப்பு ஆணையம் - 1929, இலங்கை ஆம்புலன்ஸ் - 1990. WIN நிறுவனம் சிங்களம், தமிழ், ஆங்கிலம் ஆகிய மொழிகளில் இலவச ஆலோசனை, சட்ட உதவி, தங்குமிட பரிந்துரைகளையும் வழங்குகிறது."
+    }
+  },
+  {
+    "id": "legal_rights",
+    "topic": "Legal rights under Sri Lankan law",
+    "keywords": ["law", "legal", "rights", "penal code", "sue", "case", "court"],
+    "content": {
+      "en": "Sexual harassment is a criminal offence under Section 345 of the Sri Lanka Penal Code, which covers unwelcome physical contact, gestures, or remarks of a sexual nature. You have the right to file a complaint at any police station regardless of where the incident happened, and the police are required to record your statement. You can also seek a Protection Order from a Magistrate's Court under the Prevention of Domestic Violence Act if the harasser is a family or household member. Free legal aid is available through the Legal Aid Commission of Sri Lanka.",
+      "si": "ලිංගික හිරිහැර කිරීම ශ්‍රී ලංකා දණ්ඩ නීති සංග්‍රහයේ 345 වගන්තිය යටතේ අපරාධමය වරදකි, එය අනවශ්‍ය ශාරීරික ස්පර්ශ, ඉරියව්, හෝ ලිංගික ස්වභාවයේ ප්‍රකාශ ආවරණය කරයි. සිද්ධිය සිදු වූයේ කොතැනද යන්න නොසලකා ඕනෑම පොලිස් ස්ථානයක පැමිණිල්ලක් ඉදිරිපත් කිරීමට ඔබට අයිතියක් ඇති අතර, ඔබේ ප්‍රකාශය සටහන් කිරීමට පොලීසිය බැඳී සිටී. හිරිහැර කරන්නා පවුලේ/නිවසේ සාමාජිකයෙකු නම්, ගෘහස්ථ හිංසනය වැළැක්වීමේ පනත යටතේ මහේස්ත්‍රාත් අධිකරණයකින් ආරක්ෂණ නියෝගයක් ද ඉල්ලා සිටිය හැක. ශ්‍රී ලංකා නීති ආධාර කොමිෂන් සභාව හරහා නොමිලේ නීති ආධාර ලබා ගත හැක.",
+      "ta": "இலங்கை தண்டனைச் சட்டத்தின் பிரிவு 345 இன் கீழ் பாலியல் தொல்லை ஒரு குற்றமாகும், இது விரும்பத்தகாத உடல் தொடர்பு, சைகைகள் அல்லது பாலியல் தன்மையுள்ள கருத்துகளை உள்ளடக்குகிறது. சம்பவம் எங்கு நடந்தாலும் எந்த காவல் நிலையத்திலும் புகார் அளிக்க உங்களுக்கு உரிமை உண்டு, உங்கள் வாக்குமூலத்தை பதிவு செய்ய காவல்துறை கடமைப்பட்டுள்ளது. தொல்லை செய்பவர் குடும்ப/வீட்டு உறுப்பினராக இருந்தால், குடும்ப வன்முறை தடுப்புச் சட்டத்தின் கீழ் நீதவான் நீதிமன்றத்தில் இருந்து பாதுகாப்பு உத்தரவையும் பெறலாம். இலங்கை சட்ட உதவி ஆணையம் மூலம் இலவச சட்ட உதவி கிடைக்கும்."
+    }
+  },
+  {
+    "id": "immediate_safety",
+    "topic": "What to do if you feel unsafe right now",
+    "keywords": ["unsafe", "scared", "afraid", "following me", "danger", "help me now"],
+    "content": {
+      "en": "If you feel unsafe right now: move toward a well-lit, populated place such as a shop or a station; use the SOS button in this app to alert your trusted contacts with your live location; consider using Theatre Mode to simulate an incoming call as a deterrent; and call 119 if you're in immediate danger. You are not overreacting - trust your instincts.",
+      "si": "ඔබට දැන් අනාරක්ෂිත බවක් දැනේ නම්: කඩසාප්පුවක් හෝ දුම්රිය ස්ථානයක් වැනි ආලෝකවත්, ජනාකීර්ණ ස්ථානයකට යන්න; ඔබේ විශ්වාසවන්ත සම්බන්ධතාවලට ඔබේ සජීවී ස්ථානය සමඟ අනතුරු ඇඟවීමට මෙම යෙදුමේ SOS බොත්තම භාවිතා කරන්න; වළක්වාලීමක් ලෙස පැමිණෙන ඇමතුමක් අනුකරණය කිරීමට Theatre Mode භාවිතා කිරීම සලකා බලන්න; සහ ඔබ ක්ෂණික අනතුරක සිටී නම් 119 අමතන්න. ඔබ අධික ප්‍රතික්‍රියා නොකරයි - ඔබේ හැඟීම් විශ්වාස කරන්න.",
+      "ta": "இப்போது பாதுகாப்பற்றதாக உணர்ந்தால்: கடை அல்லது நிலையம் போன்ற வெளிச்சமான, மக்கள் நிறைந்த இடத்தை நோக்கி நகருங்கள்; உங்கள் நேரடி இருப்பிடத்துடன் நம்பகமான தொடர்புகளை எச்சரிக்க இந்த ஆப்பில் உள்ள SOS பொத்தானைப் பயன்படுத்துங்கள்; ஒரு தடுப்பாக உள்வரும் அழைப்பைப் போல் நடிக்க Theatre Mode ஐப் பயன்படுத்துவதை பரிசீலிக்கவும்; உடனடி ஆபத்தில் இருந்தால் 119 ஐ அழைக்கவும். நீங்கள் அதிகமாக எதிர்வினையாற்றவில்லை - உங்கள் உள்ளுணர்வை நம்புங்கள்."
+    }
+  },
+  {
+    "id": "general_greeting",
+    "topic": "General / greeting",
+    "keywords": ["hi", "hello", "hey", "thanks", "thank you"],
+    "content": {
+      "en": "Hello, I'm here with you. You can ask me how to report an incident, what evidence to keep, your legal rights, or which helplines to call - in English, Sinhala, or Tamil.",
+      "si": "ආයුබෝවන්, මම ඔබ සමඟ මෙහි සිටිමි. සිද්ධියක් වාර්තා කරන්නේ කෙසේද, තබා ගත යුතු සාක්ෂි මොනවාද, ඔබේ නීතිමය අයිතිවාසිකම්, හෝ අමතන්නට ඇති උදව් අංක මොනවාද යන්න ඔබට මගෙන් අසන්න පුළුවන් - ඉංග්‍රීසි, සිංහල, හෝ දෙමළ භාෂාවෙන්.",
+      "ta": "வணக்கம், நான் உங்களுடன் இருக்கிறேன். சம்பவத்தை எவ்வாறு புகாரளிப்பது, என்ன சான்றுகளை வைத்திருக்க வேண்டும், உங்கள் சட்ட உரிமைகள், அல்லது எந்த ஹெல்ப்லைன்களை அழைக்கலாம் என்பதை ஆங்கிலம், சிங்களம் அல்லது தமிழில் என்னிடம் கேட்கலாம்."
+    }
+  },
+  {
+    "id": "default_fallback",
+    "topic": "Fallback / not understood",
+    "keywords": [],
+    "content": {
+      "en": "I'm not fully sure I understood that, but I'm here to help. You can ask about reporting harassment, preserving evidence, your legal rights, or helplines. If this is an emergency, please call 119 or use the SOS button.",
+      "si": "එය මට හරියටම තේරුණේ නැහැ, නමුත් මම උදව් කිරීමට මෙහි සිටිමි. හිරිහැර වාර්තා කිරීම, සාක්ෂි තබා ගැනීම, ඔබේ නීතිමය අයිතිවාසිකම්, හෝ උදව් අංක ගැන ඔබට අසන්න පුළුවන්. මෙය හදිසි අවස්ථාවක් නම්, කරුණාකර 119 අමතන්න හෝ SOS බොත්තම භාවිතා කරන්න.",
+      "ta": "அதை என்னால் முழுமையாக புரிந்துகொள்ள முடியவில்லை, ஆனால் நான் உதவ இங்கே இருக்கிறேன். தொல்லையை புகாரளிப்பது, சான்றுகளை பாதுகாப்பது, உங்கள் சட்ட உரிமைகள், அல்லது ஹெல்ப்லைன்கள் பற்றி கேட்கலாம். இது அவசரநிலை என்றால், தயவுசெய்து 119 ஐ அழைக்கவும் அல்லது SOS பொத்தானைப் பயன்படுத்தவும்."
+    }
+  }
+]

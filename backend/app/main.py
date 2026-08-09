@@ -1,0 +1,48 @@
+import logging
+
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from app import models  # noqa: F401 - ensures models are registered on Base before create_all
+from app.config import get_settings
+from app.database import Base, SessionLocal, engine
+from app.routers import auth, chatbot, checkins, contacts, helpers, location, routes, sos
+from app.services.seed import seed_helpers
+
+logging.basicConfig(level=logging.INFO)
+settings = get_settings()
+
+app = FastAPI(title="SafeStep API", version="0.1.0")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.cors_origins_list,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+@app.on_event("startup")
+def on_startup():
+    Base.metadata.create_all(bind=engine)
+    db = SessionLocal()
+    try:
+        seed_helpers(db)
+    finally:
+        db.close()
+
+
+@app.get("/api/health")
+def health_check():
+    return {"status": "ok"}
+
+
+app.include_router(auth.router)
+app.include_router(contacts.router)
+app.include_router(sos.router)
+app.include_router(routes.router)
+app.include_router(helpers.router)
+app.include_router(chatbot.router)
+app.include_router(checkins.router)
+app.include_router(location.router)

@@ -1,0 +1,18 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: safestep-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: safestep
+      POSTGRES_PASSWORD: safestep
+      POSTGRES_DB: safestep
+    ports:
+      # Host port 5433 avoids clashing with a locally-installed PostgreSQL
+      # service that may already be using 5432 on your machine.
+      - "5433:5432"
+    volumes:
+      - safestep_pgdata:/var/lib/postgresql/data
+
+volumes:
+  safestep_pgdata:
