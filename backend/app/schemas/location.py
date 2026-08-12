@@ -18,6 +18,16 @@ class LocationResponse(BaseModel):
         from_attributes = True
 
 
+class SharedLocationResponse(BaseModel):
+    full_name: str
+    latitude: float
+    longitude: float
+    updated_at: datetime
+    avatar_style: str
+    avatar_seed: str | None
+    avatar_background: str | None
+
+
 class ShareStartResponse(BaseModel):
     token: str
     expires_at: datetime
@@ -30,3 +40,6 @@ class ContactLocationResponse(BaseModel):
     latitude: float
     longitude: float
     updated_at: datetime
+    avatar_style: str
+    avatar_seed: str | None
+    avatar_background: str | None

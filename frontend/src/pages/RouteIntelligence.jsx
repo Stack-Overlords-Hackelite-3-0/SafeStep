@@ -1,20 +1,24 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { createSafetyReport, listSafetyReports } from "../api/safetyReports";
+import { getContactLocations } from "../api/location";
 import HeatmapLayer from "../components/HeatmapLayer";
 import MapView, { DEFAULT_CENTER } from "../components/MapView";
+import { useAuth } from "../context/AuthContext";
 import { getCurrentLocation } from "../utils/geo";
 
 const CATEGORIES = ["safe", "unsafe", "well_lit", "isolated", "harassment", "suspicious_activity"];
 
 export default function RouteIntelligence() {
   const { t } = useTranslation();
+  const { user } = useAuth();
   const [center, setCenter] = useState(DEFAULT_CENTER);
   const [userPosition, setUserPosition] = useState(null);
   const [reports, setReports] = useState([]);
   const [pendingPoint, setPendingPoint] = useState(null);
   const [category, setCategory] = useState("unsafe");
   const [description, setDescription] = useState("");
+  const [contactLocations, setContactLocations] = useState([]);
 
   const refresh = () => listSafetyReports().then(setReports);
 
@@ -26,6 +30,11 @@ export default function RouteIntelligence() {
         setUserPosition([latitude, longitude]);
       })
       .catch(() => {});
+
+    const refreshContactLocations = () => getContactLocations().then(setContactLocations).catch(() => {});
+    refreshContactLocations();
+    const interval = setInterval(refreshContactLocations, 20000);
+    return () => clearInterval(interval);
   }, []);
 
   const handleMapClick = (latlng) => {
@@ -57,7 +66,14 @@ export default function RouteIntelligence() {
           zoom={14}
           height="560px"
           onMapClick={handleMapClick}
+          contactMarkers={contactLocations.map((c) => ({ ...c, id: c.contact_user_id }))}
           userPosition={userPosition}
+          userAvatar={{
+            name: user?.full_name,
+            style: user?.avatar_style,
+            seed: user?.avatar_seed || user?.email,
+            background: user?.avatar_background,
+          }}
         >
           <HeatmapLayer points={reports} />
         </MapView>

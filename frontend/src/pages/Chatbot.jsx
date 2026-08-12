@@ -22,6 +22,9 @@ export default function Chatbot() {
   }, []);
 
   useEffect(() => {
+    // Skip when there's no conversation yet — scrolling to the bottom sentinel
+    // would scroll past the idle mascot illustration, clipping its top half.
+    if (messages.length === 0 && !sending) return;
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, sending]);
 
@@ -88,6 +91,14 @@ export default function Chatbot() {
       </div>
 
       <div className="chat-window">
+        {messages.length === 0 && !sending && (
+          <div className="chat-idle">
+            <img src="/Think.png" alt="" className="chat-idle-img" />
+            <div className="chat-idle-bubble">
+              <p>{t("chatbot.idle_message")}</p>
+            </div>
+          </div>
+        )}
         {messages.map((m) => (
           <div key={m.id} className={`chat-bubble ${m.role}`}>
             {m.content}

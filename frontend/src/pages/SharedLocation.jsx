@@ -21,7 +21,7 @@ export default function SharedLocation() {
 
   return (
     <div className="page">
-      <h1>Live Location</h1>
+      <h1>{location ? `${location.full_name}'s Live Location` : "Live Location"}</h1>
       {error && <p className="form-error">{error}</p>}
       {location && (
         <>
@@ -29,7 +29,13 @@ export default function SharedLocation() {
             center={[location.latitude, location.longitude]}
             zoom={16}
             height="420px"
-            markers={[{ latitude: location.latitude, longitude: location.longitude, popup: "Last known location" }]}
+            userPosition={[location.latitude, location.longitude]}
+            userAvatar={{
+              name: location.full_name,
+              style: location.avatar_style,
+              seed: location.avatar_seed,
+              background: location.avatar_background,
+            }}
             showLocate={false}
           />
           <p className="hint">Last updated: {new Date(location.updated_at).toLocaleString()}</p>

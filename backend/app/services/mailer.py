@@ -33,6 +33,19 @@ def send_email(to: str, subject: str, body: str) -> bool:
         return False
 
 
+def send_password_reset_email(to: str, token: str) -> bool:
+    settings = get_settings()
+    link = f"{settings.FRONTEND_URL.rstrip('/')}/reset-password?token={token}"
+    subject = "Reset your SafeStep password"
+    body = (
+        "We received a request to reset your SafeStep password.\n\n"
+        f"Reset it here: {link}\n\n"
+        "This link expires in 1 hour. If you didn't request this, you can ignore this email.\n\n"
+        "— SafeStep"
+    )
+    return send_email(to, subject, body)
+
+
 def send_invitation_email(to: str, inviter_name: str) -> bool:
     settings = get_settings()
     link = f"{settings.FRONTEND_URL.rstrip('/')}/contacts"

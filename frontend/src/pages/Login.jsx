@@ -47,6 +47,9 @@ export default function Login() {
           {t("auth.login_button")}
         </button>
         <p className="auth-switch">
+          <Link to="/forgot-password">{t("auth.forgot_password")}</Link>
+        </p>
+        <p className="auth-switch">
           {t("auth.no_account")} <Link to="/register">{t("auth.register")}</Link>
         </p>
       </form>

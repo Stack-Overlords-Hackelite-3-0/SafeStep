@@ -24,7 +24,20 @@
     "login_button": "Log In",
     "register_button": "Sign Up",
     "login_failed": "Invalid email or password.",
-    "register_failed": "Could not create account."
+    "register_failed": "Could not create account.",
+    "confirm_password": "Confirm Password",
+    "password_mismatch": "Passwords do not match.",
+    "forgot_password": "Forgot password?",
+    "forgot_password_title": "Reset your password",
+    "forgot_password_failed": "Something went wrong. Please try again.",
+    "forgot_password_sent": "If that email is registered, a reset link has been sent.",
+    "send_reset_link": "Send Reset Link",
+    "back_to_login": "Back to Login",
+    "reset_password_title": "Choose a new password",
+    "new_password": "New Password",
+    "reset_password_button": "Reset Password",
+    "reset_password_failed": "This reset link is invalid or has expired.",
+    "reset_password_done": "Your password has been updated. Redirecting to login…"
   },
   "dashboard": {
     "welcome": "Hi, {{name}}",
@@ -33,7 +46,14 @@
     "fake_call": "Start Fake Call",
     "start_share": "Share Live Location",
     "stop_share": "Stop Sharing",
-    "quick_actions": "Quick Actions"
+    "quick_actions": "Quick Actions",
+    "share_title": "Share Your Live Location",
+    "share_subtitle": "Anyone with this link can see your location until you stop sharing.",
+    "share_message": "I'm sharing my live location with you on SafeStep: {{link}}",
+    "copy_link": "Copy Link",
+    "copied": "Link copied to clipboard.",
+    "share_instagram_hint": "Link copied — paste it into an Instagram DM or story.",
+    "more_apps": "More Apps…"
   },
   "sos": {
     "confirm_title": "SOS Alert Sent",
@@ -50,7 +70,8 @@
     "voice_replies": "🔊 Speak replies",
     "send_error": "Couldn't get a reply. Please try again.",
     "transcribe_error": "Couldn't understand the recording. Please try again or type instead.",
-    "disclaimer": "This companion offers general guidance, not a substitute for professional legal or medical advice."
+    "disclaimer": "This companion offers general guidance, not a substitute for professional legal or medical advice.",
+    "idle_message": "Take your time — ask me anything about reporting, evidence, your rights, or helplines whenever you're ready."
   },
   "contacts": {
     "title": "Trusted Contacts",
@@ -100,8 +121,13 @@
   },
   "profile": {
     "title": "Profile",
+    "avatar_title": "Your Avatar",
     "fake_caller_name": "Fake Caller Name",
     "save": "Save Changes",
     "saved": "Profile updated."
+  },
+  "mascot": {
+    "hi": "Hi {{name}}!",
+    "hi_sub": "Good to see you. What are we going to do next?"
   }
 }

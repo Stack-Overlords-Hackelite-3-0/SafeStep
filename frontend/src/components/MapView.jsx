@@ -4,6 +4,20 @@ import { useEffect, useRef, useState } from "react";
 import { CircleMarker, MapContainer, Marker, Popup, TileLayer, Tooltip, useMap, useMapEvents } from "react-leaflet";
 import Icon from "./Icon";
 import { getCurrentLocation } from "../utils/geo";
+import { buildAvatarUrl } from "../utils/avatar";
+
+// buildAvatarUrl whitelists the style segment and percent-encodes the rest, so the
+// resulting URL is safe to embed directly in this marker HTML (no user text goes in).
+function avatarDivIcon(style, seed, background, variant) {
+  const url = buildAvatarUrl(style, seed, background, 96);
+  return L.divIcon({
+    className: "",
+    html: `<div class="map-avatar-marker ${variant}"><img src="${url}" alt="" /></div>`,
+    iconSize: [40, 40],
+    iconAnchor: [20, 40],
+    popupAnchor: [0, -40],
+  });
+}
 
 // Vite doesn't resolve Leaflet's default marker asset URLs out of the box; point at the CDN instead.
 delete L.Icon.Default.prototype._getIconUrl;
@@ -51,6 +65,7 @@ export default function MapView({
   markers = [],
   contactMarkers = [],
   userPosition,
+  userAvatar,
   showLocate = true,
   children,
 }) {
@@ -85,14 +100,25 @@ export default function MapView({
         />
         <RecenterOnChange center={center} zoom={zoom} />
         {onMapClick && <ClickHandler onMapClick={onMapClick} />}
-        {livePosition && (
-          <CircleMarker
-            center={livePosition}
-            radius={9}
-            pathOptions={{ color: "#fff", weight: 2, fillColor: "#2563eb", fillOpacity: 1 }}
+        {livePosition && userAvatar ? (
+          <Marker
+            position={livePosition}
+            icon={avatarDivIcon(userAvatar.style, userAvatar.seed, userAvatar.background, "self")}
           >
-            <Popup>You are here</Popup>
-          </CircleMarker>
+            <Tooltip permanent direction="top" offset={[0, -36]} className="map-contact-label">
+              {userAvatar.name || "You"}
+            </Tooltip>
+          </Marker>
+        ) : (
+          livePosition && (
+            <CircleMarker
+              center={livePosition}
+              radius={9}
+              pathOptions={{ color: "#fff", weight: 2, fillColor: "#2563eb", fillOpacity: 1 }}
+            >
+              <Popup>You are here</Popup>
+            </CircleMarker>
+          )
         )}
         {markers.map((m, idx) => (
           <Marker key={m.id || idx} position={[m.latitude, m.longitude]}>
@@ -100,16 +126,15 @@ export default function MapView({
           </Marker>
         ))}
         {contactMarkers.map((m, idx) => (
-          <CircleMarker
+          <Marker
             key={m.id || idx}
-            center={[m.latitude, m.longitude]}
-            radius={9}
-            pathOptions={{ color: "#fff", weight: 2, fillColor: "#b85677", fillOpacity: 1 }}
+            position={[m.latitude, m.longitude]}
+            icon={avatarDivIcon(m.avatar_style, m.avatar_seed, m.avatar_background, "contact")}
           >
-            <Tooltip permanent direction="top" offset={[0, -10]} className="map-contact-label">
+            <Tooltip permanent direction="top" offset={[0, -36]} className="map-contact-label">
               {m.name}
             </Tooltip>
-          </CircleMarker>
+          </Marker>
         ))}
         {children}
       </MapContainer>

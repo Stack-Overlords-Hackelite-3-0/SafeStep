@@ -9,7 +9,13 @@ from app.database import get_db
 from app.models.contact import TrustedContact
 from app.models.location import LocationPing, LocationShare
 from app.models.user import User
-from app.schemas.location import ContactLocationResponse, LocationResponse, LocationUpdateRequest, ShareStartResponse
+from app.schemas.location import (
+    ContactLocationResponse,
+    LocationResponse,
+    LocationUpdateRequest,
+    ShareStartResponse,
+    SharedLocationResponse,
+)
 
 router = APIRouter(prefix="/api/location", tags=["location"])
 
@@ -50,11 +56,13 @@ def list_contact_locations(current_user: User = Depends(get_current_user), db: S
 
     linked_ids = [c.linked_user_id for c in linked]
     pings = {p.user_id: p for p in db.query(LocationPing).filter(LocationPing.user_id.in_(linked_ids)).all()}
+    users = {u.id: u for u in db.query(User).filter(User.id.in_(linked_ids)).all()}
 
     results = []
     for contact in linked:
         ping = pings.get(contact.linked_user_id)
-        if not ping:
+        contact_user = users.get(contact.linked_user_id)
+        if not ping or not contact_user:
             continue
         results.append(
             ContactLocationResponse(
@@ -63,6 +71,9 @@ def list_contact_locations(current_user: User = Depends(get_current_user), db: S
                 latitude=ping.latitude,
                 longitude=ping.longitude,
                 updated_at=ping.updated_at,
+                avatar_style=contact_user.avatar_style,
+                avatar_seed=contact_user.avatar_seed or contact_user.email,
+                avatar_background=contact_user.avatar_background,
             )
         )
     return results
@@ -96,7 +107,7 @@ def stop_share(current_user: User = Depends(get_current_user), db: Session = Dep
     db.commit()
 
 
-@router.get("/share/{token}", response_model=LocationResponse)
+@router.get("/share/{token}", response_model=SharedLocationResponse)
 def view_shared_location(token: str, db: Session = Depends(get_db)):
     share = db.query(LocationShare).filter(LocationShare.token == token).first()
     if not share or not share.active or share.expires_at < datetime.now(timezone.utc):
@@ -105,4 +116,14 @@ def view_shared_location(token: str, db: Session = Depends(get_db)):
     ping = db.query(LocationPing).filter(LocationPing.user_id == share.user_id).first()
     if not ping:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No location shared yet")
-    return ping
+
+    sharer = db.get(User, share.user_id)
+    return SharedLocationResponse(
+        full_name=sharer.full_name,
+        latitude=ping.latitude,
+        longitude=ping.longitude,
+        updated_at=ping.updated_at,
+        avatar_style=sharer.avatar_style,
+        avatar_seed=sharer.avatar_seed or sharer.email,
+        avatar_background=sharer.avatar_background,
+    )

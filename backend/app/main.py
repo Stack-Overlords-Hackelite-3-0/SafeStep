@@ -36,6 +36,21 @@ def on_startup():
         conn.execute(text(
             "ALTER TABLE trusted_contacts ADD COLUMN IF NOT EXISTS status VARCHAR(16) NOT NULL DEFAULT 'accepted'"
         ))
+        conn.execute(text(
+            "ALTER TABLE users ADD COLUMN IF NOT EXISTS reset_token VARCHAR(255)"
+        ))
+        conn.execute(text(
+            "ALTER TABLE users ADD COLUMN IF NOT EXISTS reset_token_expires TIMESTAMPTZ"
+        ))
+        conn.execute(text(
+            "ALTER TABLE users ADD COLUMN IF NOT EXISTS avatar_style VARCHAR(32) NOT NULL DEFAULT 'adventurer'"
+        ))
+        conn.execute(text(
+            "ALTER TABLE users ADD COLUMN IF NOT EXISTS avatar_seed VARCHAR(255)"
+        ))
+        conn.execute(text(
+            "ALTER TABLE users ADD COLUMN IF NOT EXISTS avatar_background VARCHAR(16)"
+        ))
     db = SessionLocal()
     try:
         seed_helpers(db)

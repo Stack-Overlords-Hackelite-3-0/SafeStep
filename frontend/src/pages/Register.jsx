@@ -12,6 +12,7 @@ export default function Register() {
     full_name: "",
     email: "",
     password: "",
+    confirm_password: "",
     phone: "",
     preferred_language: "en",
   });
@@ -23,9 +24,14 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    if (form.password !== form.confirm_password) {
+      setError(t("auth.password_mismatch"));
+      return;
+    }
     setSubmitting(true);
     try {
-      await register(form);
+      const { confirm_password, ...payload } = form;
+      await register(payload);
       navigate("/");
     } catch (err) {
       setError(err.response?.data?.detail || t("auth.register_failed"));
@@ -49,6 +55,14 @@ export default function Register() {
           type="password"
           value={form.password}
           onChange={update("password")}
+          minLength={8}
+          required
+        />
+        <label>{t("auth.confirm_password")}</label>
+        <input
+          type="password"
+          value={form.confirm_password}
+          onChange={update("confirm_password")}
           minLength={8}
           required
         />

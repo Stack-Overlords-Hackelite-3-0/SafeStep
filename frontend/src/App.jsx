@@ -6,13 +6,16 @@ import CheckIns from "./pages/CheckIns";
 import Chatbot from "./pages/Chatbot";
 import Contacts from "./pages/Contacts";
 import Dashboard from "./pages/Dashboard";
+import ForgotPassword from "./pages/ForgotPassword";
 import Helpers from "./pages/Helpers";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import Register from "./pages/Register";
+import ResetPassword from "./pages/ResetPassword";
 import RouteIntelligence from "./pages/RouteIntelligence";
 import SharedLocation from "./pages/SharedLocation";
+import WelcomeMascot from "./components/WelcomeMascot";
 
 function AppShell() {
   return (
@@ -30,6 +33,7 @@ function AppShell() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
+      <WelcomeMascot />
     </div>
   );
 }
@@ -48,6 +52,8 @@ export default function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/share/:token" element={<SharedLocation />} />
         <Route path="/" element={<Root />} />
         <Route path="/*" element={<AppShell />} />

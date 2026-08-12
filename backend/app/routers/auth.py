@@ -1,3 +1,6 @@
+import secrets
+from datetime import datetime, timedelta, timezone
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
@@ -7,12 +10,17 @@ from app.core.security import create_access_token, hash_password, verify_passwor
 from app.database import get_db
 from app.models.user import User
 from app.schemas.auth import (
+    ForgotPasswordRequest,
     LoginRequest,
     RegisterRequest,
+    ResetPasswordRequest,
     TokenResponse,
     UpdateProfileRequest,
     UserResponse,
 )
+from app.services.mailer import send_password_reset_email
+
+RESET_TOKEN_EXPIRE_MINUTES = 60
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
@@ -29,6 +37,7 @@ def register(payload: RegisterRequest, db: Session = Depends(get_db)):
         full_name=payload.full_name,
         phone=payload.phone,
         preferred_language=payload.preferred_language,
+        avatar_seed=payload.email,
     )
     db.add(user)
     db.commit()
@@ -58,6 +67,39 @@ def login_json(payload: LoginRequest, db: Session = Depends(get_db)):
 
     token = create_access_token(subject=str(user.id))
     return TokenResponse(access_token=token)
+
+
+@router.post("/forgot-password")
+def forgot_password(payload: ForgotPasswordRequest, db: Session = Depends(get_db)):
+    """Always returns a generic response so callers can't use this to enumerate emails."""
+    user = db.query(User).filter(User.email == payload.email).first()
+    if user:
+        user.reset_token = secrets.token_urlsafe(32)
+        user.reset_token_expires = datetime.now(timezone.utc) + timedelta(
+            minutes=RESET_TOKEN_EXPIRE_MINUTES
+        )
+        db.commit()
+        send_password_reset_email(user.email, user.reset_token)
+    return {"detail": "If that email is registered, a reset link has been sent."}
+
+
+@router.post("/reset-password")
+def reset_password(payload: ResetPasswordRequest, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.reset_token == payload.token).first()
+    if (
+        not user
+        or not user.reset_token_expires
+        or user.reset_token_expires < datetime.now(timezone.utc)
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid or expired reset link"
+        )
+
+    user.password_hash = hash_password(payload.new_password)
+    user.reset_token = None
+    user.reset_token_expires = None
+    db.commit()
+    return {"detail": "Password updated. You can now log in."}
 
 
 @router.get("/me", response_model=UserResponse)

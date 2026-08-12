@@ -19,6 +19,11 @@ class User(Base):
     preferred_language: Mapped[str] = mapped_column(String(8), default="en")  # en | si | ta
     fake_caller_name: Mapped[str] = mapped_column(String(255), default="Mom")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
+    reset_token: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    reset_token_expires: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    avatar_style: Mapped[str] = mapped_column(String(32), default="adventurer", server_default="adventurer")
+    avatar_seed: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    avatar_background: Mapped[str | None] = mapped_column(String(16), nullable=True)
 
     trusted_contacts = relationship(
         "TrustedContact",

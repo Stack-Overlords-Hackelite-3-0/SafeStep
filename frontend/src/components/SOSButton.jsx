@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { triggerSOS } from "../api/sos";
+import Icon from "./Icon";
 
 const HOLD_DURATION_MS = 1500;
 
@@ -49,21 +50,27 @@ export default function SOSButton({ getLocation, onTriggered }) {
   };
 
   return (
-    <button
-      type="button"
-      className="sos-button"
-      onMouseDown={startHold}
-      onMouseUp={clearHold}
-      onMouseLeave={clearHold}
-      onTouchStart={startHold}
-      onTouchEnd={clearHold}
-      disabled={sending}
-      style={{
-        background: `conic-gradient(#ffffff55 ${progress}%, transparent ${progress}%)`,
-      }}
-    >
-      <span>{sending ? "..." : t("dashboard.sos_button")}</span>
-      <small>{t("dashboard.sos_hold")}</small>
-    </button>
+    <div className="sos-wrap">
+      <button
+        type="button"
+        className="sos-button"
+        onMouseDown={startHold}
+        onMouseUp={clearHold}
+        onMouseLeave={clearHold}
+        onTouchStart={startHold}
+        onTouchEnd={clearHold}
+        disabled={sending}
+        style={{
+          // Use the backgroundImage longhand, not the `background` shorthand — the
+          // latter resets background-color too, silently wiping out the red fill
+          // from the .sos-button CSS class and leaving the circle blank at rest.
+          backgroundImage: `conic-gradient(#ffffff55 ${progress}%, transparent ${progress}%)`,
+        }}
+      >
+        <Icon name="shield" size={28} />
+        <span>{sending ? "…" : t("dashboard.sos_button")}</span>
+      </button>
+      <small className="sos-hint">{t("dashboard.sos_hold")}</small>
+    </div>
   );
 }
