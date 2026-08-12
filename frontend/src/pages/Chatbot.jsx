@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { getChatHistory, sendChatMessage, transcribeAudio } from "../api/chatbot";
+import { clearChatHistory, getChatHistory, sendChatMessage, transcribeAudio } from "../api/chatbot";
+import Icon from "../components/Icon";
 import MicButton from "../components/MicButton";
 import { useAuth } from "../context/AuthContext";
 import { speakText, stopSpeaking } from "../utils/voice";
@@ -53,6 +54,13 @@ export default function Chatbot() {
     }
   };
 
+  const handleClearChat = async () => {
+    if (messages.length === 0) return;
+    if (!window.confirm(t("chatbot.clear_confirm", "Delete your entire chat history? This can't be undone."))) return;
+    await clearChatHistory();
+    setMessages([]);
+  };
+
   const handleVoiceInput = async (blob) => {
     setTranscribing(true);
     setError(null);
@@ -88,6 +96,16 @@ export default function Chatbot() {
           />
           {t("chatbot.voice_replies", "🔊 Speak replies")}
         </label>
+        <button
+          type="button"
+          className="chat-clear-btn"
+          onClick={handleClearChat}
+          disabled={messages.length === 0}
+          title={t("chatbot.clear_chat", "Clear chat")}
+          aria-label={t("chatbot.clear_chat", "Clear chat")}
+        >
+          <Icon name="trash" size={18} />
+        </button>
       </div>
 
       <div className="chat-window">

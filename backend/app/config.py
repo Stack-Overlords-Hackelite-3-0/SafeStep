@@ -16,6 +16,12 @@ class Settings(BaseSettings):
     # CORS
     CORS_ORIGINS: str = "http://localhost:5173,http://127.0.0.1:5173"
 
+    # Chat message encryption at rest. Optional - if unset, a key is derived from
+    # JWT_SECRET so it still works in dev. Set a dedicated random value in
+    # production (e.g. `python -c "import secrets;print(secrets.token_urlsafe(32))"`)
+    # so rotating JWT_SECRET doesn't also break decryption of stored chat history.
+    CHAT_ENCRYPTION_KEY: str = ""
+
     # Outbound email (optional - invite emails are skipped if SMTP_HOST is unset)
     SMTP_HOST: str = ""
     SMTP_PORT: int = 587

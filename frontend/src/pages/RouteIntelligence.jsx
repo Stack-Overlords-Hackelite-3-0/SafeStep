@@ -56,7 +56,7 @@ export default function RouteIntelligence() {
   };
 
   return (
-    <div className="page">
+    <div className="page page-fit">
       <h1>{t("routes.title")}</h1>
       <p className="hint">Click anywhere on the map to tag that location.</p>
 
@@ -64,7 +64,7 @@ export default function RouteIntelligence() {
         <MapView
           center={center}
           zoom={14}
-          height="560px"
+          height="100%"
           onMapClick={handleMapClick}
           contactMarkers={contactLocations.map((c) => ({ ...c, id: c.contact_user_id }))}
           userPosition={userPosition}

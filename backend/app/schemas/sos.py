@@ -21,6 +21,7 @@ class SOSResponse(BaseModel):
     created_at: datetime
     resolved_at: datetime | None
     notified_contacts: list[str] = []
+    unreachable_contacts: list[str] = []
 
     class Config:
         from_attributes = True

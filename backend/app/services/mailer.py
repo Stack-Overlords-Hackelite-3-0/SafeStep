@@ -46,6 +46,21 @@ def send_password_reset_email(to: str, token: str) -> bool:
     return send_email(to, subject, body)
 
 
+def send_sos_alert_email(
+    to: str, sender_name: str, latitude: float, longitude: float, message: str | None
+) -> bool:
+    maps_link = f"https://www.google.com/maps?q={latitude},{longitude}"
+    subject = f"🚨 SOS Alert from {sender_name}"
+    body = (
+        f"{sender_name} just sent an emergency SOS alert on SafeStep and listed you as a trusted contact.\n\n"
+        f"Their location at the time of the alert: {maps_link}\n\n"
+        + (f"Message: {message}\n\n" if message else "")
+        + "Please try to reach them or check in as soon as you can.\n\n"
+        "— SafeStep"
+    )
+    return send_email(to, subject, body)
+
+
 def send_invitation_email(to: str, inviter_name: str) -> bool:
     settings = get_settings()
     link = f"{settings.FRONTEND_URL.rstrip('/')}/contacts"

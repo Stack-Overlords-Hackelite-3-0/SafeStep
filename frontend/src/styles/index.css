@@ -29,7 +29,36 @@ a {
 .page {
   max-width: 1140px;
   margin: 0 auto;
-  padding: 32px 32px 64px;
+  padding: 24px 32px;
+  width: 100%;
+}
+
+/* Fixed-viewport pages: content fills the visible area with no page-level
+   scroll — any overflow (long lists, chat history) scrolls inside its own
+   panel instead. See .chat-page for the original version of this pattern. */
+.page-fit {
+  height: calc(100vh - 140px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.page-fit > h1 {
+  margin: 0 0 8px;
+  flex-shrink: 0;
+  font-size: 1.5rem;
+}
+
+.page-fit > .alert-banner,
+.page-fit > .hint {
+  flex-shrink: 0;
+}
+
+@media (max-width: 860px) {
+  .page-fit {
+    height: auto;
+    overflow: visible;
+  }
 }
 
 .page-loading {
@@ -43,12 +72,15 @@ a {
 .app-shell {
   display: flex;
   align-items: stretch;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .app-main {
   flex: 1;
   min-width: 0;
+  height: 100vh;
+  overflow-y: auto;
 }
 
 /* Sidebar */
@@ -244,7 +276,13 @@ a {
 @media (max-width: 860px) {
   .app-shell {
     flex-direction: column;
-    min-height: 0;
+    height: auto;
+    overflow: visible;
+  }
+
+  .app-main {
+    height: auto;
+    overflow: visible;
   }
 
   .sidebar,
@@ -375,6 +413,17 @@ a {
   grid-template-columns: minmax(280px, 420px) 1fr;
   gap: 24px;
   align-items: start;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+@media (max-width: 860px) {
+  .profile-grid {
+    flex: none;
+    overflow-y: visible;
+  }
 }
 
 /* Avatar picker */
@@ -591,18 +640,24 @@ a {
   margin-bottom: 20px;
 }
 
+.alert-banner-warning {
+  font-size: 13px;
+  color: #92400e;
+}
+
 .stat-strip {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 16px;
-  margin-bottom: 24px;
+  margin: 12px 0;
+  flex-shrink: 0;
 }
 
 .stat-card {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
-  padding: 16px 18px;
+  padding: clamp(8px, 1.5vh, 16px) 18px;
 }
 
 .stat-card .stat-label {
@@ -632,21 +687,55 @@ a {
 }
 
 .dashboard-grid {
-  display: grid;
-  grid-template-columns: 1.4fr 1fr;
+  display: flex;
   gap: 20px;
+  flex: 1;
+  min-height: 0;
+}
+
+.dashboard-grid > .dashboard-map,
+.dashboard-grid > .map-wrapper {
+  flex: 1.4;
+  min-width: 0;
+}
+
+.dashboard-grid > .dashboard-actions,
+.dashboard-grid > .side-list {
+  flex: 1;
+  min-width: 0;
 }
 
 @media (max-width: 720px) {
   .dashboard-grid {
-    grid-template-columns: 1fr;
+    flex-direction: column;
+    flex: none;
+  }
+
+  .dashboard-grid > * {
+    flex: none;
   }
 }
 
+.dashboard-map {
+  height: 100%;
+  min-height: 240px;
+}
+
+.map-wrapper {
+  min-height: 240px;
+}
+
 .side-list {
-  max-height: 560px;
+  height: 100%;
   overflow-y: auto;
   padding-right: 4px;
+}
+
+@media (max-width: 860px) {
+  .side-list {
+    height: auto;
+    max-height: 560px;
+  }
 }
 
 .side-list .card-list {
@@ -657,7 +746,10 @@ a {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: 16px;
+  justify-content: center;
+  gap: clamp(8px, 2vh, 16px);
+  overflow-y: auto;
+  padding-right: 2px;
 }
 
 /* Generic modal */
@@ -779,9 +871,11 @@ a {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
-  padding: 28px 16px;
+  padding: clamp(10px, 3vh, 28px) 16px;
   display: flex;
   justify-content: center;
+  min-height: 0;
+  flex-shrink: 1;
 }
 
 .sos-wrap {
@@ -792,13 +886,15 @@ a {
 }
 
 .sos-button {
-  width: 152px;
-  height: 152px;
+  /* Scales with available viewport height instead of a fixed size, so it
+     shrinks on short screens rather than forcing the dashboard to scroll. */
+  width: clamp(84px, 16vh, 152px);
+  height: clamp(84px, 16vh, 152px);
   border-radius: 50%;
   background: var(--color-accent);
   color: white;
   border: 6px solid #ffffffaa;
-  font-size: 1.3rem;
+  font-size: clamp(0.85rem, 1.6vh, 1.3rem);
   font-weight: 800;
   letter-spacing: 0.03em;
   display: flex;
@@ -828,7 +924,7 @@ a {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
-  padding: 16px 12px;
+  padding: clamp(10px, 2vh, 16px) 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -853,6 +949,11 @@ a {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.action-tile-icon-lg {
+  width: 48px;
+  height: 48px;
 }
 
 .action-tile.active {
@@ -941,6 +1042,12 @@ a {
   display: flex;
   flex-direction: column;
   height: calc(100vh - 140px);
+}
+
+@media (max-width: 860px) {
+  .chat-page {
+    height: auto;
+  }
 }
 
 .disclaimer {
@@ -1175,6 +1282,30 @@ a {
   cursor: pointer;
 }
 
+.chat-clear-btn {
+  margin-left: auto;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.chat-clear-btn:hover:not(:disabled) {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.chat-clear-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 .mic-button {
   border: 1px solid var(--color-border);
   background: var(--color-surface);
@@ -1224,7 +1355,8 @@ a {
   display: grid;
   grid-template-columns: 320px 1fr;
   gap: 24px;
-  align-items: start;
+  flex: 1;
+  min-height: 0;
 }
 
 .split-panel {
@@ -1232,8 +1364,15 @@ a {
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
   padding: 20px;
+  align-self: start;
   position: sticky;
   top: 24px;
+}
+
+.split-content {
+  height: 100%;
+  overflow-y: auto;
+  padding-right: 4px;
 }
 
 .split-panel h2 {
@@ -1263,6 +1402,12 @@ a {
 @media (max-width: 860px) {
   .split-page {
     grid-template-columns: 1fr;
+    flex: none;
+  }
+
+  .split-content {
+    height: auto;
+    overflow-y: visible;
   }
 
   .split-panel {

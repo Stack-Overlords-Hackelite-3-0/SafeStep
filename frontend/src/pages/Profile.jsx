@@ -45,7 +45,7 @@ export default function Profile() {
   };
 
   return (
-    <div className="page">
+    <div className="page page-fit">
       <div className="profile-header">
         <img
           className="profile-header-avatar"

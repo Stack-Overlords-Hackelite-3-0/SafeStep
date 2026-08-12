@@ -94,13 +94,18 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="page">
+    <div className="page page-fit">
       <h1>{t("dashboard.welcome", { name: user?.full_name?.split(" ")[0] || "" })}</h1>
 
       {activeAlert && (
         <div className="alert-banner">
           <strong>{t("sos.confirm_title")}</strong>
           <p>{t("sos.notified", { names: activeAlert.notified_contacts.join(", ") || "—" })}</p>
+          {activeAlert.unreachable_contacts?.length > 0 && (
+            <p className="alert-banner-warning">
+              {t("sos.unreachable", { names: activeAlert.unreachable_contacts.join(", ") })}
+            </p>
+          )}
           <button type="button" className="btn-secondary" onClick={handleMarkSafe}>
             {t("sos.resolve")}
           </button>
@@ -134,7 +139,7 @@ export default function Dashboard() {
           <MapView
             center={center}
             zoom={14}
-            height="360px"
+            height="100%"
             markers={helpers.map((h) => ({ ...h, popup: h.name }))}
             contactMarkers={contactLocations.map((c) => ({ ...c, id: c.contact_user_id }))}
             userPosition={userPosition}
@@ -153,22 +158,28 @@ export default function Dashboard() {
           </div>
 
           <div className="action-tiles">
-            <button type="button" className="action-tile" onClick={() => setShowFakeCall(true)}>
-              <span className="action-tile-icon">
-                <Icon name="phone" size={22} />
+            <button
+              type="button"
+              className="action-tile"
+              onClick={() => setShowFakeCall(true)}
+              title={t("dashboard.fake_call")}
+              aria-label={t("dashboard.fake_call")}
+            >
+              <span className="action-tile-icon action-tile-icon-lg">
+                <Icon name="phone" size={26} />
               </span>
-              <span>{t("dashboard.fake_call")}</span>
             </button>
 
             <button
               type="button"
               className={sharing ? "action-tile active" : "action-tile"}
               onClick={handleShareTileClick}
+              title={sharing ? t("dashboard.stop_share") : t("dashboard.start_share")}
+              aria-label={sharing ? t("dashboard.stop_share") : t("dashboard.start_share")}
             >
-              <span className="action-tile-icon">
-                <Icon name="pin" size={22} />
+              <span className="action-tile-icon action-tile-icon-lg">
+                <Icon name="pin" size={26} />
               </span>
-              <span>{sharing ? t("dashboard.stop_share") : t("dashboard.start_share")}</span>
             </button>
           </div>
         </div>

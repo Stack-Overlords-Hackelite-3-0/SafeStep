@@ -93,7 +93,7 @@ export default function Helpers() {
   };
 
   return (
-    <div className="page">
+    <div className="page page-fit">
       <h1>{t("helpers.title")} ({helpers.length + places.length})</h1>
 
       {legendTypes.length > 0 && (
@@ -125,7 +125,7 @@ export default function Helpers() {
         <MapView
           center={center}
           zoom={13}
-          height="560px"
+          height="100%"
           markers={[...helperMarkers, ...placeMarkers]}
           contactMarkers={contactLocations.map((c) => ({ ...c, id: c.contact_user_id }))}
           userPosition={userPosition}

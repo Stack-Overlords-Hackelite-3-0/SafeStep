@@ -10,13 +10,17 @@ from app.models.contact import TrustedContact
 from app.models.sos import SOSAlert
 from app.models.user import User
 from app.schemas.sos import SOSResponse, SOSTriggerRequest
+from app.services.mailer import send_sos_alert_email
 
 router = APIRouter(prefix="/api/sos", tags=["sos"])
 
 
-def _to_response(alert: SOSAlert, notified: list[str] | None = None) -> SOSResponse:
+def _to_response(
+    alert: SOSAlert, notified: list[str] | None = None, unreachable: list[str] | None = None
+) -> SOSResponse:
     resp = SOSResponse.model_validate(alert)
     resp.notified_contacts = notified or []
+    resp.unreachable_contacts = unreachable or []
     return resp
 
 
@@ -38,11 +42,20 @@ def trigger_sos(
     db.commit()
     db.refresh(alert)
 
-    # Simulated notification fan-out to trusted contacts (no real SMS/email provider wired up in this scaffold).
+    # Real email fan-out to trusted contacts. Contacts without an email on file can't
+    # be reached this way (no SMS provider wired up), so they're reported separately
+    # rather than silently claimed as "notified".
     contacts = db.query(TrustedContact).filter(TrustedContact.user_id == current_user.id).all()
-    notified = [c.name for c in contacts]
+    notified, unreachable = [], []
+    for contact in contacts:
+        if contact.email and send_sos_alert_email(
+            contact.email, current_user.full_name, payload.latitude, payload.longitude, payload.message
+        ):
+            notified.append(contact.name)
+        else:
+            unreachable.append(contact.name)
 
-    return _to_response(alert, notified)
+    return _to_response(alert, notified, unreachable)
 
 
 @router.get("/history", response_model=list[SOSResponse])

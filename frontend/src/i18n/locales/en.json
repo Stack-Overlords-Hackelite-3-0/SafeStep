@@ -58,6 +58,7 @@
   "sos": {
     "confirm_title": "SOS Alert Sent",
     "notified": "Trusted contacts notified: {{names}}",
+    "unreachable": "Couldn't reach (no email on file): {{names}}",
     "resolve": "I'm Safe Now",
     "history": "Alert History"
   },
@@ -68,6 +69,8 @@
     "typing": "Thinking…",
     "transcribing": "Listening…",
     "voice_replies": "🔊 Speak replies",
+    "clear_chat": "Clear chat",
+    "clear_confirm": "Delete your entire chat history? This can't be undone.",
     "send_error": "Couldn't get a reply. Please try again.",
     "transcribe_error": "Couldn't understand the recording. Please try again or type instead.",
     "disclaimer": "This companion offers general guidance, not a substitute for professional legal or medical advice.",

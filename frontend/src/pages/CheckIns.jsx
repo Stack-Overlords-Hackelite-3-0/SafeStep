@@ -36,7 +36,7 @@ export default function CheckIns() {
   const pendingCount = checkins.filter((c) => c.status === "pending").length;
 
   return (
-    <div className="page">
+    <div className="page page-fit">
       <h1>{t("checkins.title")}</h1>
 
       <div className="split-page">

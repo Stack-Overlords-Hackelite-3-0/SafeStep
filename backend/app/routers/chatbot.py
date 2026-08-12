@@ -9,6 +9,7 @@ from app.models.chat import ChatMessage
 from app.models.user import User
 from app.schemas.chat import ChatMessageRequest, ChatMessageResponse, ChatReplyResponse, TranscribeResponse
 from app.services.chatbot_service import get_chatbot_reply
+from app.services.crypto import decrypt_text, encrypt_text
 from app.services.speech_service import transcribe_audio
 
 logger = logging.getLogger(__name__)
@@ -18,14 +19,27 @@ router = APIRouter(prefix="/api/chatbot", tags=["chatbot"])
 _HISTORY_WINDOW = 10
 
 
+def _decrypted(m: ChatMessage) -> ChatMessageResponse:
+    return ChatMessageResponse(
+        id=m.id, role=m.role, language=m.language, content=decrypt_text(m.content), created_at=m.created_at
+    )
+
+
 @router.get("/history", response_model=list[ChatMessageResponse])
 def chat_history(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    return (
+    messages = (
         db.query(ChatMessage)
         .filter(ChatMessage.user_id == current_user.id)
         .order_by(ChatMessage.created_at.asc())
         .all()
     )
+    return [_decrypted(m) for m in messages]
+
+
+@router.delete("/history", status_code=status.HTTP_204_NO_CONTENT)
+def clear_chat_history(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    db.query(ChatMessage).filter(ChatMessage.user_id == current_user.id).delete()
+    db.commit()
 
 
 @router.post("/message", response_model=ChatReplyResponse)
@@ -35,7 +49,7 @@ def send_message(
     db: Session = Depends(get_db),
 ):
     user_msg = ChatMessage(
-        user_id=current_user.id, role="user", language=payload.language, content=payload.message
+        user_id=current_user.id, role="user", language=payload.language, content=encrypt_text(payload.message)
     )
     db.add(user_msg)
     db.commit()
@@ -47,20 +61,20 @@ def send_message(
         .limit(_HISTORY_WINDOW)
         .all()
     )
-    history = [{"role": m.role, "content": m.content} for m in reversed(recent)]
+    history = [{"role": m.role, "content": decrypt_text(m.content)} for m in reversed(recent)]
 
     reply_text, source = get_chatbot_reply(
         payload.message, payload.language, history[:-1], db=db, user_id=current_user.id
     )
 
     assistant_msg = ChatMessage(
-        user_id=current_user.id, role="assistant", language=payload.language, content=reply_text
+        user_id=current_user.id, role="assistant", language=payload.language, content=encrypt_text(reply_text)
     )
     db.add(assistant_msg)
     db.commit()
     db.refresh(assistant_msg)
 
-    return ChatReplyResponse(reply=assistant_msg, source=source)
+    return ChatReplyResponse(reply=_decrypted(assistant_msg), source=source)
 
 
 @router.post("/transcribe", response_model=TranscribeResponse)

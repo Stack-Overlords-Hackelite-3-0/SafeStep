@@ -138,7 +138,7 @@ export default function MapView({
           <Marker
             key={m.id || idx}
             position={[m.latitude, m.longitude]}
-            icon={m.icon ? typeDivIcon(m.icon, m.color || "#2563eb") : undefined}
+            {...(m.icon ? { icon: typeDivIcon(m.icon, m.color || "#2563eb") } : {})}
           >
             {(m.popup || onMarkerSelect) && (
               <Popup>

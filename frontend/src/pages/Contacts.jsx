@@ -54,7 +54,7 @@ export default function Contacts() {
   };
 
   return (
-    <div className="page">
+    <div className="page page-fit">
       <h1>{t("contacts.title")}</h1>
 
       {invitations.length > 0 && (
