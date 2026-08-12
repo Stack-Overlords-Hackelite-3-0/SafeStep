@@ -40,3 +40,8 @@ class InvitationResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class InvitePreviewResponse(BaseModel):
+    inviter_name: str
+    status: str  # pending | accepted | declined

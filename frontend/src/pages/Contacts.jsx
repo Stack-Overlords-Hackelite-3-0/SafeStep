@@ -126,9 +126,7 @@ export default function Contacts() {
                     <strong>{c.name}</strong>
                     <p>
                       {c.phone} {c.relationship_label && `• ${c.relationship_label}`}
-                      {c.linked_user_id && (
-                        <span className={`status-pill ${c.status}`}>{t(STATUS_LABEL_KEY[c.status])}</span>
-                      )}
+                      <span className={`status-pill ${c.status}`}>{t(STATUS_LABEL_KEY[c.status])}</span>
                     </p>
                   </div>
                   <button type="button" className="btn-danger" onClick={() => handleDelete(c.id)}>✕</button>

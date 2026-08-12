@@ -50,18 +50,17 @@ export default function Dashboard() {
   }, []);
 
   useEffect(() => {
-    if (!sharing) return;
-    const pushLocation = () => {
+    // Keep the "you are here" marker fresh. Pushing the location to the backend
+    // (so trusted contacts can see it) happens globally via usePassiveLocationSync,
+    // independent of this page and of the public share-link toggle below.
+    const refreshOwnPosition = () => {
       getCurrentLocation()
-        .then(({ latitude, longitude }) => {
-          setUserPosition([latitude, longitude]);
-          return updateLocation(latitude, longitude);
-        })
+        .then(({ latitude, longitude }) => setUserPosition([latitude, longitude]))
         .catch(() => {});
     };
-    const interval = setInterval(pushLocation, 20000);
+    const interval = setInterval(refreshOwnPosition, 20000);
     return () => clearInterval(interval);
-  }, [sharing]);
+  }, []);
 
   const nextCheckIn = checkins
     .filter((c) => c.status === "pending")

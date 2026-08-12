@@ -52,6 +52,13 @@ def on_startup():
         conn.execute(text(
             "ALTER TABLE users ADD COLUMN IF NOT EXISTS avatar_background VARCHAR(16)"
         ))
+        conn.execute(text(
+            "ALTER TABLE trusted_contacts ADD COLUMN IF NOT EXISTS invite_token VARCHAR(64)"
+        ))
+        conn.execute(text(
+            "CREATE UNIQUE INDEX IF NOT EXISTS trusted_contacts_invite_token_key "
+            "ON trusted_contacts (invite_token) WHERE invite_token IS NOT NULL"
+        ))
     db = SessionLocal()
     try:
         seed_helpers(db)

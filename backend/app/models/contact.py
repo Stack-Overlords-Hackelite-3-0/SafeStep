@@ -27,4 +27,9 @@ class TrustedContact(Base):
     # by default since there's no invitation to act on.
     status: Mapped[str] = mapped_column(String(16), default="accepted", server_default="accepted")
 
+    # Unguessable token embedded in the invite link emailed to the contact, so
+    # anyone can be invited via a clickable link regardless of whether they
+    # already have a SafeStep account yet.
+    invite_token: Mapped[str | None] = mapped_column(String(64), unique=True, nullable=True)
+
     user = relationship("User", back_populates="trusted_contacts", foreign_keys=[user_id])

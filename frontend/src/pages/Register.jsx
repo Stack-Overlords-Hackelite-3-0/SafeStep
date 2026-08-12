@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Logo from "../components/Logo";
 
@@ -8,6 +8,8 @@ export default function Register() {
   const { t } = useTranslation();
   const { register } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const next = searchParams.get("next") || "/";
   const [form, setForm] = useState({
     full_name: "",
     email: "",
@@ -32,7 +34,7 @@ export default function Register() {
     try {
       const { confirm_password, ...payload } = form;
       await register(payload);
-      navigate("/");
+      navigate(next);
     } catch (err) {
       setError(err.response?.data?.detail || t("auth.register_failed"));
     } finally {
@@ -79,7 +81,8 @@ export default function Register() {
           {t("auth.register_button")}
         </button>
         <p className="auth-switch">
-          {t("auth.have_account")} <Link to="/login">{t("auth.login")}</Link>
+          {t("auth.have_account")}{" "}
+          <Link to={next !== "/" ? `/login?next=${encodeURIComponent(next)}` : "/login"}>{t("auth.login")}</Link>
         </p>
       </form>
     </div>

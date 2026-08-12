@@ -16,3 +16,12 @@ export const acceptInvitation = (id) =>
 
 export const declineInvitation = (id) =>
   apiClient.post(`/api/contacts/invitations/${id}/decline`).then((r) => r.data);
+
+export const getInvitePreview = (token) =>
+  apiClient.get(`/api/contacts/invite/${token}`).then((r) => r.data);
+
+export const acceptInviteByToken = (token) =>
+  apiClient.post(`/api/contacts/invite/${token}/accept`).then((r) => r.data);
+
+export const declineInviteByToken = (token) =>
+  apiClient.post(`/api/contacts/invite/${token}/decline`);

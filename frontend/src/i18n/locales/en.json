@@ -83,7 +83,7 @@
     "phone": "Phone",
     "relationship": "Relationship",
     "email": "Email",
-    "email_hint": "We use this to find their SafeStep account and send an in-app invite to link up.",
+    "email_hint": "We'll email them an invite link — they can accept or reject it, even if they don't have a SafeStep account yet.",
     "empty": "No trusted contacts yet. Add someone who should be notified in an emergency.",
     "status_pending": "Invite sent",
     "status_accepted": "Trusted",
@@ -93,6 +93,21 @@
     "invite_from": "{{name}} wants to add you as a trusted contact.",
     "accept": "Accept",
     "decline": "Decline"
+  },
+  "invite": {
+    "loading": "Loading invitation…",
+    "not_found": "This invitation link is invalid or has expired.",
+    "message": "{{name}} added you as a trusted contact on SafeStep.",
+    "subtitle": "Once accepted, you'll be able to see each other's location and get notified if either of you sends an SOS alert.",
+    "accept": "Accept",
+    "decline": "Reject",
+    "accepted_message": "You're now connected with {{name}} on SafeStep.",
+    "declined_message": "You've declined this invitation.",
+    "already_responded": "This invitation has already been responded to.",
+    "login_to_accept": "Log in to accept",
+    "create_account": "Create an account to accept",
+    "decline_no_account": "You can reject this without creating an account.",
+    "go_to_dashboard": "Go to Dashboard"
   },
   "helpers": {
     "title": "Nearby Helper Network",

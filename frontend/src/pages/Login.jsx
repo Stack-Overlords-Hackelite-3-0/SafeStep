@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Logo from "../components/Logo";
 
@@ -8,6 +8,8 @@ export default function Login() {
   const { t } = useTranslation();
   const { login } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const next = searchParams.get("next") || "/";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -19,7 +21,7 @@ export default function Login() {
     setSubmitting(true);
     try {
       await login(email, password);
-      navigate("/");
+      navigate(next);
     } catch {
       setError(t("auth.login_failed"));
     } finally {
@@ -50,7 +52,10 @@ export default function Login() {
           <Link to="/forgot-password">{t("auth.forgot_password")}</Link>
         </p>
         <p className="auth-switch">
-          {t("auth.no_account")} <Link to="/register">{t("auth.register")}</Link>
+          {t("auth.no_account")}{" "}
+          <Link to={next !== "/" ? `/register?next=${encodeURIComponent(next)}` : "/register"}>
+            {t("auth.register")}
+          </Link>
         </p>
       </form>
     </div>

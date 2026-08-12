@@ -61,13 +61,13 @@ def send_sos_alert_email(
     return send_email(to, subject, body)
 
 
-def send_invitation_email(to: str, inviter_name: str) -> bool:
+def send_invitation_email(to: str, inviter_name: str, invite_token: str) -> bool:
     settings = get_settings()
-    link = f"{settings.FRONTEND_URL.rstrip('/')}/contacts"
+    link = f"{settings.FRONTEND_URL.rstrip('/')}/invite/{invite_token}"
     subject = f"{inviter_name} added you as a trusted contact on SafeStep"
     body = (
         f"{inviter_name} added you as a trusted contact on SafeStep.\n\n"
-        f"Log in and open Contacts to accept or decline: {link}\n\n"
+        f"Open this link to accept or reject the invitation: {link}\n\n"
         "Once accepted, you'll be able to see each other's location and be notified "
         "if either of you sends an SOS alert.\n\n"
         "— SafeStep"
