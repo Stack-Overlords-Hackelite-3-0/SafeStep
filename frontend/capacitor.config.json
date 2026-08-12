@@ -1,0 +1,8 @@
+{
+  "appId": "com.safestep.app",
+  "appName": "SafeStep",
+  "webDir": "dist",
+  "server": {
+    "cleartext": true
+  }
+}

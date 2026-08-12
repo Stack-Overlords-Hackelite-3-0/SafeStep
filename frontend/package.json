@@ -6,9 +6,15 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "android:sync": "vite build && cap sync android",
+    "android:open": "cap open android",
+    "android:run": "vite build && cap run android"
   },
   "dependencies": {
+    "@capacitor/android": "^8.5.0",
+    "@capacitor/core": "^8.5.0",
+    "@capacitor/geolocation": "^8.2.1",
     "axios": "^1.7.7",
     "i18next": "^23.15.1",
     "leaflet": "^1.9.4",
@@ -20,6 +26,7 @@
     "react-router-dom": "^6.26.2"
   },
   "devDependencies": {
+    "@capacitor/cli": "^8.5.0",
     "@vitejs/plugin-react": "^4.3.1",
     "vite": "^5.4.8"
   }
