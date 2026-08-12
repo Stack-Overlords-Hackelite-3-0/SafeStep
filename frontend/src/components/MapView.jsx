@@ -1,7 +1,7 @@
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { useEffect, useRef, useState } from "react";
-import { CircleMarker, MapContainer, Marker, Popup, TileLayer, Tooltip, useMap, useMapEvents } from "react-leaflet";
+import { CircleMarker, MapContainer, Marker, Polyline, Popup, TileLayer, Tooltip, useMap, useMapEvents } from "react-leaflet";
 import Icon from "./Icon";
 import { getCurrentLocation } from "../utils/geo";
 import { buildAvatarUrl } from "../utils/avatar";
@@ -16,6 +16,18 @@ function avatarDivIcon(style, seed, background, variant) {
     iconSize: [40, 40],
     iconAnchor: [20, 40],
     popupAnchor: [0, -40],
+  });
+}
+
+// emoji and color come from a fixed lookup table the caller controls (never user text),
+// so it's safe to interpolate directly into the marker HTML.
+function typeDivIcon(emoji, color) {
+  return L.divIcon({
+    className: "",
+    html: `<div class="map-type-marker" style="--map-marker-color:${color}"><span>${emoji}</span></div>`,
+    iconSize: [32, 32],
+    iconAnchor: [16, 32],
+    popupAnchor: [0, -32],
   });
 }
 
@@ -67,6 +79,8 @@ export default function MapView({
   userPosition,
   userAvatar,
   showLocate = true,
+  routePath,
+  onMarkerSelect,
   children,
 }) {
   const mapRef = useRef(null);
@@ -121,10 +135,28 @@ export default function MapView({
           )
         )}
         {markers.map((m, idx) => (
-          <Marker key={m.id || idx} position={[m.latitude, m.longitude]}>
-            {m.popup && <Popup>{m.popup}</Popup>}
+          <Marker
+            key={m.id || idx}
+            position={[m.latitude, m.longitude]}
+            icon={m.icon ? typeDivIcon(m.icon, m.color || "#2563eb") : undefined}
+          >
+            {(m.popup || onMarkerSelect) && (
+              <Popup>
+                {m.popup}
+                {onMarkerSelect && (
+                  <div>
+                    <button type="button" className="map-popup-route-btn" onClick={() => onMarkerSelect(m)}>
+                      Directions
+                    </button>
+                  </div>
+                )}
+              </Popup>
+            )}
           </Marker>
         ))}
+        {routePath?.length > 1 && (
+          <Polyline positions={routePath} pathOptions={{ color: "#2563eb", weight: 5, opacity: 0.75 }} />
+        )}
         {contactMarkers.map((m, idx) => (
           <Marker
             key={m.id || idx}

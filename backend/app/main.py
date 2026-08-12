@@ -7,7 +7,7 @@ from sqlalchemy import text
 from app import models  # noqa: F401 - ensures models are registered on Base before create_all
 from app.config import get_settings
 from app.database import Base, SessionLocal, engine
-from app.routers import auth, chatbot, checkins, contacts, helpers, location, routes, sos
+from app.routers import auth, chatbot, checkins, contacts, directions, helpers, location, public_places, routes, sos
 from app.services.seed import seed_helpers
 
 logging.basicConfig(level=logging.INFO)
@@ -68,6 +68,8 @@ app.include_router(contacts.router)
 app.include_router(sos.router)
 app.include_router(routes.router)
 app.include_router(helpers.router)
+app.include_router(public_places.router)
+app.include_router(directions.router)
 app.include_router(chatbot.router)
 app.include_router(checkins.router)
 app.include_router(location.router)

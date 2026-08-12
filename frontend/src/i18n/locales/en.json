@@ -94,7 +94,20 @@
   "helpers": {
     "title": "Nearby Helper Network",
     "empty": "No verified helpers found nearby.",
-    "distance": "{{km}} km away"
+    "distance": "{{km}} km away",
+    "placesTitle": "Public Places",
+    "placesEmpty": "No public places found nearby.",
+    "legend": "Map Legend",
+    "types": {
+      "volunteer": "Volunteer",
+      "shop": "Safe Shop",
+      "police_station": "Police Station",
+      "safe_house": "Safe House",
+      "hospital": "Hospital",
+      "fire_station": "Fire Station",
+      "pharmacy": "Pharmacy",
+      "clinic": "Clinic"
+    }
   },
   "routes": {
     "title": "Smart Route Intelligence",
