@@ -14,6 +14,11 @@
 
 * {
   box-sizing: border-box;
+  /* Android WebView (and mobile Chrome) draws a translucent gray rectangle
+     over whatever's pressed unless this is disabled — on a circular button
+     like the floating SOS button that shows up as a square cutting across
+     the circle's edge. */
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -54,13 +59,6 @@ a {
   flex-shrink: 0;
 }
 
-@media (max-width: 860px) {
-  .page-fit {
-    height: auto;
-    overflow: visible;
-  }
-}
-
 .page-loading {
   display: flex;
   justify-content: center;
@@ -81,6 +79,7 @@ a {
   min-width: 0;
   height: 100vh;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 /* Sidebar */
@@ -273,72 +272,13 @@ a {
   gap: 4px;
 }
 
+/* Sidebar stays a vertical rail at every screen size (including mobile/native
+   app builds) instead of collapsing into a horizontal top bar — narrow
+   screens just default to the icon-only "collapsed" rail (see Sidebar.jsx)
+   instead of changing layout direction. */
 @media (max-width: 860px) {
-  .app-shell {
-    flex-direction: column;
-    height: auto;
-    overflow: visible;
-  }
-
-  .app-main {
-    height: auto;
-    overflow: visible;
-  }
-
-  .sidebar,
-  .sidebar.collapsed {
-    position: static;
-    width: 100%;
-    height: auto;
-    flex-direction: row;
-    align-items: center;
-    padding: 12px 16px;
-    gap: 16px;
-    overflow-x: auto;
-  }
-
-  .sidebar-collapse-btn {
-    display: none;
-  }
-
-  .sidebar.collapsed .sidebar-brand-name {
-    display: inline;
-  }
-
-  .sidebar.collapsed .sidebar-nav-label {
-    display: none;
-  }
-
-  .sidebar-nav {
-    flex-direction: row;
-  }
-
-  .sidebar-nav a {
-    white-space: nowrap;
-  }
-
-  .sidebar-nav-label {
-    display: none;
-  }
-
-  .sidebar-user {
-    order: -1;
-    padding: 4px;
-  }
-
-  .sidebar-user-name {
-    display: none;
-  }
-
-  .sidebar-footer {
-    margin-top: 0;
-    margin-left: auto;
-    flex-direction: row;
-    align-items: center;
-  }
-
   .page {
-    padding: 24px 20px 56px;
+    padding: 20px 16px;
   }
 }
 
@@ -417,13 +357,6 @@ a {
   min-height: 0;
   overflow-y: auto;
   padding-right: 4px;
-}
-
-@media (max-width: 860px) {
-  .profile-grid {
-    flex: none;
-    overflow-y: visible;
-  }
 }
 
 /* Avatar picker */
@@ -647,7 +580,7 @@ a {
 
 .stat-strip {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 16px;
   margin: 12px 0;
   flex-shrink: 0;
@@ -706,13 +639,35 @@ a {
 }
 
 @media (max-width: 720px) {
+  /* Stay flex:1 (fills remaining page-fit height) and just switch the main
+     axis to vertical — the existing 1.4/1 flex-grow ratios then split height
+     instead of width, so map+actions still fit without a page scroll. */
   .dashboard-grid {
     flex-direction: column;
+  }
+}
+
+/* On narrow/short mobile screens, the map + SOS panel + action tiles don't
+   reliably fit inside the fixed page-fit viewport height — squeezing them
+   into it clips and overlaps the SOS button on top of the action tiles.
+   Fall back to normal document flow with a page scroll instead. */
+@media (max-width: 720px) {
+  .dashboard-page.page-fit {
+    height: auto;
+    overflow: visible;
+  }
+
+  .dashboard-page .dashboard-grid {
     flex: none;
   }
 
-  .dashboard-grid > * {
+  .dashboard-page .dashboard-map {
+    height: 280px;
     flex: none;
+  }
+
+  .dashboard-page .dashboard-actions {
+    overflow-y: visible;
   }
 }
 
@@ -729,13 +684,6 @@ a {
   height: 100%;
   overflow-y: auto;
   padding-right: 4px;
-}
-
-@media (max-width: 860px) {
-  .side-list {
-    height: auto;
-    max-height: 560px;
-  }
 }
 
 .side-list .card-list {
@@ -905,6 +853,8 @@ a {
   cursor: pointer;
   box-shadow: 0 10px 30px rgba(230, 57, 70, 0.4);
   user-select: none;
+  -webkit-touch-callout: none;
+  touch-action: manipulation;
 }
 
 .sos-hint {
@@ -1037,6 +987,242 @@ a {
   border-radius: 32px;
 }
 
+/* Floating mobile SOS button (hidden while the native system-wide bubble,
+   see FloatingSOSButton.jsx, is active). */
+.floating-sos-btn {
+  display: none;
+}
+
+@media (max-width: 860px) {
+  .floating-sos-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    color: white;
+    border: 4px solid #ffffffaa;
+    box-shadow: 0 10px 24px rgba(230, 57, 70, 0.45);
+    z-index: 900;
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+
+  .floating-sos-btn:active {
+    cursor: grabbing;
+  }
+}
+
+.floating-sos-alert {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  z-index: 901;
+  background: #fff5f5;
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15);
+}
+
+.floating-sos-alert strong {
+  color: var(--color-accent);
+}
+
+.floating-sos-alert p {
+  margin: 6px 0 10px;
+  font-size: 0.9rem;
+}
+
+/* Fake call — minimized pill, floats over any page */
+.fake-call-minimized {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #1e293b;
+  color: white;
+  border-radius: 32px;
+  padding: 8px 10px 8px 8px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+}
+
+.fake-call-minimized-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #334155;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.fake-call-minimized-info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.fake-call-minimized-info small {
+  color: #94a3b8;
+}
+
+.fake-call-minimized-hangup {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: none;
+  background: var(--color-accent);
+  color: white;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.fake-call-minimize-btn {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: #ffffff22;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+/* Fake call — desktop "Google Meet" style layout */
+.meet-overlay {
+  background: #202124;
+  justify-content: flex-start;
+  padding: 0 0 32px;
+}
+
+.meet-topbar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 18px 24px;
+  position: relative;
+}
+
+.meet-topbar-title {
+  font-weight: 600;
+}
+
+.meet-topbar-duration {
+  color: #9aa0a6;
+  font-size: 0.9rem;
+}
+
+.meet-minimize-btn {
+  position: absolute;
+  right: 24px;
+  top: 14px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: #ffffff1a;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.meet-grid {
+  flex: 1;
+  width: 100%;
+  max-width: 900px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding: 0 32px;
+}
+
+.meet-tile {
+  background: #3c4043;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 260px;
+}
+
+.meet-tile-self {
+  background: #28292c;
+}
+
+.meet-tile-avatar {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background: #5f6368;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.meet-tile-avatar-self {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.meet-tile-label {
+  color: #e8eaed;
+  font-size: 0.9rem;
+}
+
+.meet-status {
+  color: #9aa0a6;
+  margin: 16px 0 0;
+}
+
+.meet-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 28px;
+}
+
+.meet-control-btn {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: none;
+  background: #3c4043;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.meet-control-btn.off {
+  background: #5f6368;
+  opacity: 0.7;
+}
+
+.meet-join-btn {
+  border-radius: 32px;
+}
+
 /* Chat */
 .chat-page {
   display: flex;
@@ -1044,11 +1230,6 @@ a {
   height: calc(100vh - 140px);
 }
 
-@media (max-width: 860px) {
-  .chat-page {
-    height: auto;
-  }
-}
 
 .disclaimer {
   color: var(--color-text-muted);
@@ -1151,113 +1332,6 @@ a {
   border-bottom: 8px solid var(--color-surface-tint);
 }
 
-/* Draggable mascot buddy */
-.mascot-buddy {
-  position: fixed;
-  z-index: 900;
-  animation: mascot-pop 0.25s ease-out;
-  cursor: grab;
-  touch-action: none;
-  user-select: none;
-}
-
-.mascot-buddy:active {
-  cursor: grabbing;
-}
-
-@keyframes mascot-pop {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Fixed-size wrapper so the close button and speech bubble anchor to the
-   avatar image itself, not to a flex row that widens/shifts once the bubble
-   opens — otherwise dragging the mascot near the right edge (its default
-   position) pushes the close button and bubble text off-screen. */
-.mascot-avatar {
-  position: relative;
-  width: 120px;
-}
-
-.mascot-toast-img {
-  width: 120px;
-  height: auto;
-  display: block;
-}
-
-.mascot-bubble {
-  position: absolute;
-  right: 100%;
-  bottom: 4px;
-  margin-right: 12px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 16px;
-  padding: 14px 18px;
-  width: max-content;
-  max-width: 220px;
-  box-shadow: 0 10px 30px rgba(59, 22, 38, 0.2);
-}
-
-.mascot-bubble strong {
-  display: block;
-  color: var(--color-primary-dark);
-  margin-bottom: 2px;
-}
-
-.mascot-bubble p {
-  margin: 0;
-  font-size: 0.85rem;
-  color: var(--color-text-muted);
-  line-height: 1.4;
-}
-
-.mascot-bubble::after {
-  content: "";
-  position: absolute;
-  bottom: 14px;
-  right: -7px;
-  border-top: 7px solid transparent;
-  border-bottom: 7px solid transparent;
-  border-left: 7px solid var(--color-surface);
-}
-
-.mascot-close {
-  position: absolute;
-  top: -10px;
-  right: -6px;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
-  color: var(--color-text-muted);
-  cursor: pointer;
-  font-size: 0.75rem;
-  z-index: 1;
-}
-
-@media (max-width: 640px) {
-  .mascot-avatar {
-    width: 84px;
-  }
-
-  .mascot-toast-img {
-    width: 84px;
-  }
-
-  .mascot-bubble {
-    max-width: 160px;
-    padding: 10px 14px;
-  }
-}
-
 .chat-input-row {
   display: flex;
   gap: 10px;
@@ -1330,10 +1404,19 @@ a {
 
 .chat-input-row input {
   flex: 1;
+  /* Flex items default to min-width: auto, and a text input's intrinsic
+     width easily exceeds the space left for it on a narrow phone — without
+     this it refuses to shrink and pushes the send button off-screen. */
+  min-width: 0;
   padding: 12px 14px;
   border-radius: 10px;
   border: 1px solid var(--color-border);
   font-size: 1rem;
+}
+
+.chat-input-row .btn-primary,
+.chat-input-row .mic-button {
+  flex-shrink: 0;
 }
 
 .invitations-panel {
@@ -1402,12 +1485,6 @@ a {
 @media (max-width: 860px) {
   .split-page {
     grid-template-columns: 1fr;
-    flex: none;
-  }
-
-  .split-content {
-    height: auto;
-    overflow-y: visible;
   }
 
   .split-panel {
@@ -1437,7 +1514,10 @@ a {
   padding: 0;
   margin: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  /* min(260px, 100%) instead of a bare 260px — a plain minmax() floor never
+     shrinks below its minimum, which forces horizontal overflow/scroll on
+     phones narrower than ~260px + padding + sidebar. */
+  grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
   gap: 12px;
 }
 
@@ -1537,6 +1617,18 @@ a {
   position: relative;
   border-radius: 12px;
   overflow: hidden;
+}
+
+/* Leaflet's own root div uses height:100%, which silently collapses to 0 in
+   nested flex layouts where an ancestor's height is only a min-height floor
+   rather than an explicit value (confirmed via live DOM inspection: tiles
+   load fine, but .leaflet-container itself measures 0px tall on mobile).
+   Absolutely positioning it against .map-wrapper (already position:relative,
+   and reliably sized via its own min-height) sidesteps the percentage-height
+   chain entirely. */
+.map-wrapper .leaflet-container {
+  position: absolute;
+  inset: 0;
 }
 
 .map-locate-btn {

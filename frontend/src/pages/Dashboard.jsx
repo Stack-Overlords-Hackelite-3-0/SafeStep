@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { listContacts } from "../api/contacts";
-import { listCheckIns } from "../api/checkins";
 import { getNearbyHelpers } from "../api/helpers";
 import { getContactLocations, startShare, stopShare, updateLocation } from "../api/location";
 import { resolveSOS } from "../api/sos";
@@ -25,7 +24,6 @@ export default function Dashboard() {
   const [shareInfo, setShareInfo] = useState(null);
   const [showShareModal, setShowShareModal] = useState(false);
   const [contacts, setContacts] = useState([]);
-  const [checkins, setCheckins] = useState([]);
   const [contactLocations, setContactLocations] = useState([]);
 
   useEffect(() => {
@@ -40,7 +38,6 @@ export default function Dashboard() {
         getNearbyHelpers(center[0], center[1], 8).then(setHelpers).catch(() => {});
       });
     listContacts().then(setContacts).catch(() => {});
-    listCheckIns().then(setCheckins).catch(() => {});
 
     const refreshContactLocations = () => getContactLocations().then(setContactLocations).catch(() => {});
     refreshContactLocations();
@@ -61,10 +58,6 @@ export default function Dashboard() {
     const interval = setInterval(refreshOwnPosition, 20000);
     return () => clearInterval(interval);
   }, []);
-
-  const nextCheckIn = checkins
-    .filter((c) => c.status === "pending")
-    .sort((a, b) => new Date(a.scheduled_time) - new Date(b.scheduled_time))[0];
 
   const handleShareTileClick = async () => {
     if (sharing) {
@@ -93,7 +86,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="page page-fit">
+    <div className="page page-fit dashboard-page">
       <h1>{t("dashboard.welcome", { name: user?.full_name?.split(" ")[0] || "" })}</h1>
 
       {activeAlert && (
@@ -116,15 +109,6 @@ export default function Dashboard() {
           <div className="stat-label">{t("nav.contacts")}</div>
           <div className="stat-value">{contacts.length}</div>
           <div className="stat-sub">{contacts.length === 0 ? t("contacts.empty") : t("nav.contacts")}</div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-label">{t("checkins.title")}</div>
-          <div className="stat-value">
-            {nextCheckIn ? new Date(nextCheckIn.scheduled_time).toLocaleString() : "—"}
-          </div>
-          <div className="stat-sub">
-            {nextCheckIn ? t("checkins.status_pending") : t("checkins.title")}
-          </div>
         </div>
         <div className="stat-card">
           <div className="stat-label">{t("dashboard.start_share")}</div>

@@ -6,7 +6,7 @@ import { Capacitor } from "@capacitor/core";
 // 10.0.2.2. Set VITE_API_BASE_URL explicitly for a physical device or a real
 // backend URL; this default only helps the common emulator-during-dev case.
 const nativeDefault = Capacitor.isNativePlatform() ? "http://10.0.2.2:8000" : "http://localhost:8000";
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || nativeDefault;
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || nativeDefault;
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,

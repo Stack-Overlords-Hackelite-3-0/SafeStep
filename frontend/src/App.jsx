@@ -1,4 +1,5 @@
 import { Navigate, Route, Routes } from "react-router-dom";
+import FloatingSOSButton from "./components/FloatingSOSButton";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Sidebar from "./components/Sidebar";
 import { AuthProvider, useAuth } from "./context/AuthContext";
@@ -16,7 +17,6 @@ import Register from "./pages/Register";
 import ResetPassword from "./pages/ResetPassword";
 import RouteIntelligence from "./pages/RouteIntelligence";
 import SharedLocation from "./pages/SharedLocation";
-import WelcomeMascot from "./components/WelcomeMascot";
 import usePassiveLocationSync from "./hooks/usePassiveLocationSync";
 
 function AppShell() {
@@ -38,7 +38,7 @@ function AppShell() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
-      <WelcomeMascot />
+      <FloatingSOSButton />
     </div>
   );
 }

@@ -121,6 +121,33 @@ function FitToContacts({ userPosition, contactMarkers }) {
   return null;
 }
 
+// If the map's container isn't at its final size the instant Leaflet
+// initializes (very common with our flex/page-fit layout, and with a
+// WebView's different paint timing on Android), Leaflet caches the wrong
+// pixel size and renders a blank or partially-tiled map until something
+// forces a recalculation. ResizeObserver catches later layout shifts too
+// (e.g. the sidebar collapsing, keyboard opening/closing).
+function InvalidateSizeOnResize() {
+  const map = useMap();
+
+  useEffect(() => {
+    const container = map.getContainer();
+    // Also run once shortly after mount, in case the container was already
+    // its final size but Leaflet just measured it before layout settled.
+    const timers = [100, 400].map((ms) => setTimeout(() => map.invalidateSize(), ms));
+
+    const observer = new ResizeObserver(() => map.invalidateSize());
+    observer.observe(container);
+
+    return () => {
+      timers.forEach(clearTimeout);
+      observer.disconnect();
+    };
+  }, [map]);
+
+  return null;
+}
+
 // MapContainer only reads `center`/`zoom` on the initial render, so when the
 // caller's center arrives later (e.g. async geolocation), the map needs to be
 // told explicitly to move there.
@@ -185,29 +212,10 @@ export default function MapView({
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
+        <InvalidateSizeOnResize />
         <RecenterOnChange center={center} zoom={zoom} />
         <FitToContacts userPosition={livePosition} contactMarkers={contactMarkers} />
         {onMapClick && <ClickHandler onMapClick={onMapClick} />}
-        {livePosition && userAvatar ? (
-          <Marker
-            position={livePosition}
-            icon={avatarDivIcon(userAvatar.style, userAvatar.seed, userAvatar.background, "self")}
-          >
-            <Tooltip permanent direction="top" offset={[0, -36]} className="map-contact-label">
-              {userAvatar.name || "You"}
-            </Tooltip>
-          </Marker>
-        ) : (
-          livePosition && (
-            <CircleMarker
-              center={livePosition}
-              radius={9}
-              pathOptions={{ color: "#fff", weight: 2, fillColor: "#2563eb", fillOpacity: 1 }}
-            >
-              <Popup>You are here</Popup>
-            </CircleMarker>
-          )
-        )}
         {markers.map((m, idx) => (
           <Marker
             key={m.id || idx}
@@ -231,10 +239,37 @@ export default function MapView({
         {routePath?.length > 1 && (
           <Polyline positions={routePath} pathOptions={{ color: "#2563eb", weight: 5, opacity: 0.75 }} />
         )}
+        {/* Avatar markers (self + contacts) get an explicit zIndexOffset so a person's
+            photo always renders above generic helper/place pins. Leaflet auto-ranks
+            marker stacking by each marker's own screen Y position (latitude), not by
+            render/DOM order, so two markers at different-but-nearby coordinates can
+            still stack in either direction without this. */}
+        {livePosition && userAvatar ? (
+          <Marker
+            position={livePosition}
+            zIndexOffset={1000}
+            icon={avatarDivIcon(userAvatar.style, userAvatar.seed, userAvatar.background, "self")}
+          >
+            <Tooltip permanent direction="top" offset={[0, -36]} className="map-contact-label">
+              {userAvatar.name || "You"}
+            </Tooltip>
+          </Marker>
+        ) : (
+          livePosition && (
+            <CircleMarker
+              center={livePosition}
+              radius={9}
+              pathOptions={{ color: "#fff", weight: 2, fillColor: "#2563eb", fillOpacity: 1 }}
+            >
+              <Popup>You are here</Popup>
+            </CircleMarker>
+          )
+        )}
         {spreadContactMarkers.map((m, idx) => (
           <Marker
             key={m.id || idx}
             position={[m.latitude, m.longitude]}
+            zIndexOffset={1000}
             icon={avatarDivIcon(m.avatar_style, m.avatar_seed, m.avatar_background, "contact")}
           >
             <Tooltip permanent direction="top" offset={[0, -36]} className="map-contact-label">

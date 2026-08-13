@@ -9,7 +9,6 @@ from app.config import get_settings
 from app.database import Base, SessionLocal, engine
 from app.routers import auth, chatbot, checkins, contacts, directions, helpers, location, public_places, routes, sos
 from app.services.crypto import encrypt_legacy_chat_messages
-from app.services.seed import seed_helpers
 
 logging.basicConfig(level=logging.INFO)
 settings = get_settings()
@@ -61,7 +60,6 @@ def on_startup():
         ))
     db = SessionLocal()
     try:
-        seed_helpers(db)
         encrypted_count = encrypt_legacy_chat_messages(db)
         if encrypted_count:
             logging.info("Encrypted %d pre-existing plaintext chat messages", encrypted_count)

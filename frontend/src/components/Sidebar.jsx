@@ -13,8 +13,6 @@ const NAV_ITEMS = [
   { to: "/contacts", icon: "heart", key: "contacts" },
   { to: "/chatbot", icon: "chat", key: "chatbot" },
   { to: "/helpers", icon: "pin", key: "helpers" },
-  { to: "/routes", icon: "route", key: "routes" },
-  { to: "/checkins", icon: "checkin", key: "checkins" },
 ];
 
 const LANGUAGES = ["en", "si", "ta"];
@@ -22,7 +20,13 @@ const LANGUAGES = ["en", "si", "ta"];
 export default function Sidebar() {
   const { t, i18n } = useTranslation();
   const { user, logout } = useAuth();
-  const [collapsed, setCollapsed] = useState(() => localStorage.getItem("safestep_sidebar_collapsed") === "1");
+  const [collapsed, setCollapsed] = useState(() => {
+    const saved = localStorage.getItem("safestep_sidebar_collapsed");
+    if (saved !== null) return saved === "1";
+    // No explicit preference yet — default to the compact icon rail on narrow
+    // screens (phones, the mobile app build) instead of the full 240px sidebar.
+    return typeof window !== "undefined" && window.innerWidth <= 860;
+  });
 
   useEffect(() => {
     localStorage.setItem("safestep_sidebar_collapsed", collapsed ? "1" : "0");

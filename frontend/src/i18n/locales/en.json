@@ -53,7 +53,14 @@
     "copy_link": "Copy Link",
     "copied": "Link copied to clipboard.",
     "share_instagram_hint": "Link copied — paste it into an Instagram DM or story.",
-    "more_apps": "More Apps…"
+    "more_apps": "More Apps…",
+    "calling": "Calling…",
+    "end_call": "End",
+    "decline_call": "Decline",
+    "join_call": "Join now",
+    "minimize_call": "Minimize call",
+    "you": "You",
+    "meet_title": "SafeStep Meet"
   },
   "sos": {
     "confirm_title": "SOS Alert Sent",
@@ -155,10 +162,12 @@
     "avatar_title": "Your Avatar",
     "fake_caller_name": "Fake Caller Name",
     "save": "Save Changes",
-    "saved": "Profile updated."
-  },
-  "mascot": {
-    "hi": "Hi {{name}}!",
-    "hi_sub": "Good to see you. What are we going to do next?"
+    "saved": "Profile updated.",
+    "overlay_title": "Floating SOS Bubble",
+    "overlay_desc": "A floating SOS shield stays visible over every other app, even when SafeStep is closed. Tap it anywhere to send an SOS instantly.",
+    "overlay_enable": "Enable Floating Bubble",
+    "overlay_disable": "Disable Floating Bubble",
+    "overlay_permission_hint": "Grant \"Display over other apps\" in the screen that just opened, then come back and tap Enable again.",
+    "overlay_active": "Active — drag the bubble anywhere, tap it to send SOS."
   }
 }

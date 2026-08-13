@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { updateMe } from "../api/auth";
 import AvatarPicker from "../components/AvatarPicker";
 import { useAuth } from "../context/AuthContext";
 import { setAppLanguage } from "../i18n";
+import SosOverlay, { isSosOverlaySupported, notifySosOverlayStateChanged } from "../native/sosOverlay";
 import { buildAvatarUrl } from "../utils/avatar";
 
 export default function Profile() {
@@ -20,6 +21,49 @@ export default function Profile() {
   });
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
+
+  const overlaySupported = isSosOverlaySupported();
+  const [overlayActive, setOverlayActive] = useState(false);
+  const [overlayHint, setOverlayHint] = useState(false);
+  const [overlayBusy, setOverlayBusy] = useState(false);
+
+  useEffect(() => {
+    if (!overlaySupported) return;
+    const refresh = () => SosOverlay.isBubbleActive().then(({ value }) => setOverlayActive(value));
+    refresh();
+    // Overlay permission is granted in a separate system Settings screen —
+    // re-check state when the user comes back to the app.
+    window.addEventListener("focus", refresh);
+    return () => window.removeEventListener("focus", refresh);
+  }, [overlaySupported]);
+
+  const handleToggleOverlay = async () => {
+    if (!overlaySupported || overlayBusy) return;
+    setOverlayBusy(true);
+    try {
+      if (overlayActive) {
+        await SosOverlay.stopBubble();
+        setOverlayActive(false);
+        setOverlayHint(false);
+        notifySosOverlayStateChanged();
+        return;
+      }
+      const { value: hasOverlay } = await SosOverlay.hasOverlayPermission();
+      if (!hasOverlay) {
+        await SosOverlay.requestOverlayPermission();
+        setOverlayHint(true);
+        return;
+      }
+      const { value: hasNotif } = await SosOverlay.hasNotificationPermission();
+      if (!hasNotif) await SosOverlay.requestNotificationPermission();
+      await SosOverlay.startBubble();
+      setOverlayActive(true);
+      setOverlayHint(false);
+      notifySosOverlayStateChanged();
+    } finally {
+      setOverlayBusy(false);
+    }
+  };
 
   const updateAvatar = (patch) => {
     setForm((f) => ({
@@ -118,6 +162,23 @@ export default function Profile() {
               excuse yourself from a situation without drawing attention.
             </p>
           </div>
+
+          {overlaySupported && (
+            <div className="split-panel" style={{ position: "static" }}>
+              <h2>{t("profile.overlay_title")}</h2>
+              <p className="hint">{t("profile.overlay_desc")}</p>
+              {overlayActive && <p className="form-success">{t("profile.overlay_active")}</p>}
+              {overlayHint && !overlayActive && <p className="hint">{t("profile.overlay_permission_hint")}</p>}
+              <button
+                type="button"
+                className={overlayActive ? "btn-secondary" : "btn-primary"}
+                onClick={handleToggleOverlay}
+                disabled={overlayBusy}
+              >
+                {overlayActive ? t("profile.overlay_disable") : t("profile.overlay_enable")}
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { getMe, login as loginRequest, register as registerRequest } from "../api/auth";
+import { clearSosOverlayCredentials, syncSosOverlayCredentials } from "../native/sosOverlay";
 
 const AuthContext = createContext(null);
 
@@ -14,7 +15,10 @@ export function AuthProvider({ children }) {
       return;
     }
     getMe()
-      .then(setUser)
+      .then((me) => {
+        setUser(me);
+        syncSosOverlayCredentials(token);
+      })
       .catch(() => localStorage.removeItem("safestep_token"))
       .finally(() => setLoading(false));
   }, []);
@@ -24,6 +28,7 @@ export function AuthProvider({ children }) {
     localStorage.setItem("safestep_token", access_token);
     const me = await getMe();
     setUser(me);
+    syncSosOverlayCredentials(access_token);
     return me;
   };
 
@@ -32,12 +37,14 @@ export function AuthProvider({ children }) {
     localStorage.setItem("safestep_token", access_token);
     const me = await getMe();
     setUser(me);
+    syncSosOverlayCredentials(access_token);
     return me;
   };
 
   const logout = () => {
     localStorage.removeItem("safestep_token");
     setUser(null);
+    clearSosOverlayCredentials();
   };
 
   return (
