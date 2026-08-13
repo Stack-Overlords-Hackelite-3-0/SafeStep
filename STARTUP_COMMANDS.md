@@ -7,6 +7,7 @@ Project layout:
 SafeStep/
   backend/     FastAPI + PostgreSQL (Python)
   frontend/    React + Vite
+    android/   Capacitor-wrapped Android app (same frontend + native SOS bubble)
   docker-compose.yml   Postgres database only
 ```
 
@@ -110,7 +111,38 @@ Frontend is now running at **http://localhost:5173**
 
 ---
 
-## 4. Daily workflow (after first-time setup)
+## 4. Android app (optional)
+
+The same frontend is also shipped as an Android app via [Capacitor](https://capacitorjs.com/), with one extra native-only feature: a system-wide floating SOS bubble. You don't need this for local web development — only if you want to build/run the Android app itself.
+
+Extra prerequisites:
+- **Android Studio** (includes the Android SDK) - https://developer.android.com/studio
+- A running backend (step 2) reachable from the phone/emulator (see note below)
+
+```bash
+cd frontend
+```
+
+**Point the app at a reachable backend.** `localhost` inside an emulator or physical device refers to the device itself, not your machine, so `frontend/.env`'s `VITE_API_BASE_URL` needs to be:
+- Android emulator: `http://10.0.2.2:8000` (the emulator's alias for the host machine)
+- Physical device: `http://<your-machine's-LAN-IP>:8000` (device and machine must be on the same network), and `backend/.env`'s `CORS_ORIGINS` must include that origin
+
+```bash
+# Build the web app and sync it into the Android project
+npm run android:sync
+
+# Open the Android project in Android Studio to build/run on a device or emulator
+npm run android:open
+
+# Or build + install + launch directly (device/emulator must already be connected)
+npm run android:run
+```
+
+The native SOS bubble (`android/app/src/main/java/com/safestep/app/SosOverlayPlugin.java`) only activates on Android — it's a no-op when running the same code as a website or in the browser preview.
+
+---
+
+## 5. Daily workflow (after first-time setup)
 
 ```bash
 # Terminal 1 - database (skip if already running)
