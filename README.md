@@ -114,4 +114,4 @@ The frontend is a single-page React app that talks to the FastAPI backend exclus
 
 ## Video submission link
 
-TODO: add link here before submitting.
+https://youtu.be/xY6jUB1TcXs
